@@ -1,0 +1,736 @@
+object frmPanel: TfrmPanel
+  Left = 0
+  Top = 0
+  Caption = '9864 - Panel'
+  ClientHeight = 286
+  ClientWidth = 635
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object pnlDevice: TPanel
+    Left = 41
+    Top = 41
+    Width = 546
+    Height = 209
+    Caption = ' '
+    Color = clGrayText
+    ParentBackground = False
+    TabOrder = 0
+    object TA_ONLY_Sel: TShape
+      Left = 461
+      Top = 92
+      Width = 2
+      Height = -59
+    end
+    object STBY_Sel: TShape
+      Left = 420
+      Top = 92
+      Width = 42
+      Height = 2
+    end
+    object Sw_Big_Bottom: TShape
+      Left = 441
+      Top = 66
+      Width = 42
+      Height = 51
+      Shape = stCircle
+    end
+    object TEMP4: TShape
+      Left = 251
+      Top = 157
+      Width = 41
+      Height = 26
+      Shape = stCircle
+    end
+    object TEMP2: TShape
+      Left = 251
+      Top = 15
+      Width = 41
+      Height = 16
+      Shape = stCircle
+    end
+    object lbl_TA_RA: TLabel
+      Left = 500
+      Top = 29
+      Width = 40
+      Height = 13
+      Caption = 'TA/RA'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -8
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object lbl_STBY: TLabel
+      Left = 369
+      Top = 85
+      Width = 33
+      Height = 13
+      Caption = 'STBY'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -8
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object TEMP1: TShape
+      Left = 38
+      Top = 34
+      Width = 43
+      Height = 40
+      Shape = stCircle
+    end
+    object lbl_ATC_SOURCE: TLabel
+      Left = 25
+      Top = 187
+      Width = 79
+      Height = 13
+      Caption = 'ALT SOURCE'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -8
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object lbl_XPNDR: TLabel
+      Left = 38
+      Top = 15
+      Width = 44
+      Height = 13
+      Caption = 'XPNDR'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -8
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object lbl_ALT_RPTG_OFF: TLabel
+      Left = 351
+      Top = 55
+      Width = 95
+      Height = 14
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'ALT RPTG OFF '
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -8
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object lbl_TA_ONLY: TLabel
+      Left = 440
+      Top = 15
+      Width = 54
+      Height = 13
+      Caption = 'TA ONLY'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -8
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object lbl_XPNDR2: TLabel
+      Left = 391
+      Top = 25
+      Width = 44
+      Height = 13
+      Caption = 'XPNDR'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -8
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object LgEnc_L: TShape
+      Left = 154
+      Top = 125
+      Width = 71
+      Height = 68
+      Shape = stCircle
+    end
+    object LgEnc_R: TShape
+      Left = 324
+      Top = 125
+      Width = 76
+      Height = 68
+      Shape = stCircle
+    end
+    object lbl_IDENT: TLabel
+      Left = 255
+      Top = 139
+      Width = 39
+      Height = 13
+      Caption = 'IDENT'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -8
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      WordWrap = True
+    end
+    object SmEnc_L: TShape
+      Left = 164
+      Top = 134
+      Width = 50
+      Height = 50
+      Brush.Color = clSilver
+      Shape = stCircle
+    end
+    object lbl_TCAS: TLabel
+      Left = 529
+      Top = 82
+      Width = 15
+      Height = 64
+      Alignment = taCenter
+      Caption = 'T C A S'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      WordWrap = True
+    end
+    object SmEncVal_L: TLabel
+      Left = 180
+      Top = 152
+      Width = 18
+      Height = 13
+      Caption = '???'
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object LgEncVal_L: TLabel
+      Left = 180
+      Top = 111
+      Width = 18
+      Height = 13
+      Caption = '???'
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object LgEncVal_R: TLabel
+      Left = 354
+      Top = 111
+      Width = 18
+      Height = 13
+      Caption = '???'
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object lbl_ATC: TLabel
+      Left = 4
+      Top = 89
+      Width = 15
+      Height = 48
+      Alignment = taCenter
+      Caption = 'A T C'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      WordWrap = True
+    end
+    object TEMP3: TShape
+      Left = 38
+      Top = 143
+      Width = 42
+      Height = 38
+      Shape = stCircle
+    end
+    object lbl_1_Low: TLabel
+      Left = 20
+      Top = 157
+      Width = 6
+      Height = 13
+      Caption = '1'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -8
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+    end
+    object lbl_2_Low: TLabel
+      Left = 90
+      Top = 157
+      Width = 6
+      Height = 13
+      Caption = '2'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -8
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+    end
+    object lbl_2_High: TLabel
+      Left = 90
+      Top = 47
+      Width = 6
+      Height = 13
+      Caption = '2'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -8
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+    end
+    object lbl_1_High: TLabel
+      Left = 20
+      Top = 47
+      Width = 6
+      Height = 13
+      Caption = '1'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -8
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+    end
+    object IDENT: TShape
+      Left = 251
+      Top = 162
+      Width = 41
+      Height = 16
+      Brush.Color = clSilver
+      Shape = stCircle
+    end
+    object SmEnc_R: TShape
+      Left = 337
+      Top = 134
+      Width = 50
+      Height = 50
+      Brush.Color = clSilver
+      Shape = stCircle
+    end
+    object SmEncVal_R: TLabel
+      Left = 354
+      Top = 152
+      Width = 18
+      Height = 13
+      Caption = '???'
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object Sw_Big_Point: TShape
+      Left = 452
+      Top = 49
+      Width = 22
+      Height = 50
+      Pen.Style = psClear
+      Shape = stEllipse
+    end
+    object Sw_Big_Indicator: TShape
+      Left = 461
+      Top = 56
+      Width = 3
+      Height = 20
+      Brush.Color = clBlack
+      Shape = stRoundRect
+    end
+    object LCD_BackPlane: TShape
+      Left = 201
+      Top = 37
+      Width = 142
+      Height = 72
+      Brush.Color = clBlack
+    end
+    object lblXPNDRFail: TLabel
+      Left = 213
+      Top = 15
+      Width = 98
+      Height = 13
+      Caption = 'XPNDR       FAIL'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -8
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Sw_ALT: TShape
+      Left = 34
+      Top = 159
+      Width = 27
+      Height = 7
+      Brush.Color = clBlack
+      Shape = stRoundRect
+    end
+    object Sw_XPNDR: TShape
+      Left = 34
+      Top = 49
+      Width = 27
+      Height = 7
+      Brush.Color = clBlack
+      Shape = stRoundRect
+    end
+    object dig_1_f: TShape
+      Left = 235
+      Top = 68
+      Width = 5
+      Height = 14
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_1_e: TShape
+      Left = 235
+      Top = 84
+      Width = 5
+      Height = 14
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_1_c: TShape
+      Left = 250
+      Top = 84
+      Width = 5
+      Height = 14
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_1_b: TShape
+      Left = 250
+      Top = 68
+      Width = 5
+      Height = 14
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_1_a: TShape
+      Left = 238
+      Top = 64
+      Width = 14
+      Height = 5
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_1_d: TShape
+      Left = 238
+      Top = 96
+      Width = 14
+      Height = 5
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_1_g: TShape
+      Left = 239
+      Top = 80
+      Width = 12
+      Height = 5
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_2_f: TShape
+      Left = 262
+      Top = 68
+      Width = 5
+      Height = 14
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_2_e: TShape
+      Left = 262
+      Top = 84
+      Width = 5
+      Height = 14
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_2_c: TShape
+      Left = 277
+      Top = 84
+      Width = 5
+      Height = 14
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_2_b: TShape
+      Left = 277
+      Top = 68
+      Width = 5
+      Height = 14
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_2_a: TShape
+      Left = 265
+      Top = 64
+      Width = 14
+      Height = 5
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_2_d: TShape
+      Left = 265
+      Top = 96
+      Width = 14
+      Height = 5
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_2_g: TShape
+      Left = 266
+      Top = 80
+      Width = 12
+      Height = 5
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_3_f: TShape
+      Left = 289
+      Top = 68
+      Width = 5
+      Height = 14
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_3_e: TShape
+      Left = 289
+      Top = 84
+      Width = 5
+      Height = 14
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_3_c: TShape
+      Left = 304
+      Top = 84
+      Width = 5
+      Height = 14
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_3_b: TShape
+      Left = 304
+      Top = 68
+      Width = 5
+      Height = 14
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_3_a: TShape
+      Left = 292
+      Top = 64
+      Width = 14
+      Height = 5
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_3_d: TShape
+      Left = 292
+      Top = 96
+      Width = 14
+      Height = 5
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_3_g: TShape
+      Left = 292
+      Top = 80
+      Width = 12
+      Height = 5
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_4_f: TShape
+      Left = 313
+      Top = 68
+      Width = 5
+      Height = 14
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_4_e: TShape
+      Left = 313
+      Top = 84
+      Width = 5
+      Height = 14
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_4_c: TShape
+      Left = 328
+      Top = 84
+      Width = 5
+      Height = 14
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_4_b: TShape
+      Left = 328
+      Top = 68
+      Width = 5
+      Height = 14
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_4_a: TShape
+      Left = 316
+      Top = 64
+      Width = 14
+      Height = 5
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_4_d: TShape
+      Left = 316
+      Top = 96
+      Width = 14
+      Height = 5
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object dig_4_g: TShape
+      Left = 317
+      Top = 80
+      Width = 12
+      Height = 5
+      Brush.Color = cl3DLight
+      Shape = stRoundRect
+    end
+    object lbl_F_LED: TLabel
+      Left = 206
+      Top = 53
+      Width = 25
+      Height = 57
+      Caption = 'F'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindow
+      Font.Height = -47
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+    end
+    object lbl_ATC_LED: TLabel
+      Left = 212
+      Top = 40
+      Width = 33
+      Height = 21
+      Caption = 'ATC'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindow
+      Font.Height = -17
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object lbl_1_LED: TLabel
+      Left = 255
+      Top = 41
+      Width = 10
+      Height = 19
+      Caption = '1'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindow
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object lbl_2_LED: TLabel
+      Left = 265
+      Top = 41
+      Width = 10
+      Height = 19
+      Caption = '2'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindow
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object lbl_RPLY_LED: TLabel
+      Left = 291
+      Top = 40
+      Width = 44
+      Height = 21
+      Caption = 'RPLY'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindow
+      Font.Height = -17
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object dp1: TShape
+      Left = 227
+      Top = 95
+      Width = 8
+      Height = 8
+      Shape = stCircle
+    end
+    object dp2: TShape
+      Left = 254
+      Top = 95
+      Width = 8
+      Height = 8
+      Shape = stCircle
+    end
+    object dp3: TShape
+      Left = 281
+      Top = 95
+      Width = 8
+      Height = 8
+      Shape = stCircle
+    end
+    object dp4: TShape
+      Left = 307
+      Top = 95
+      Width = 8
+      Height = 8
+      Shape = stCircle
+    end
+    object lbl_TEST: TLabel
+      Left = 508
+      Top = 85
+      Width = 3
+      Height = 13
+      Visible = False
+    end
+  end
+end
