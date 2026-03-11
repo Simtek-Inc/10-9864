@@ -1,0 +1,121 @@
+//=============================================================================
+//     Copyright (c) 2006	ASIX Electronic Corporation      All rights reserved.
+//
+//     This is unpublished proprietary source code of ASIX Electronic Corporation
+//
+//     The copyright notice above does not evidence any actual or intended
+//     publication of such source code.
+//=============================================================================
+//
+//=============================================================================
+// Module Name: gs2e.c
+// Purpose:
+// Author:
+// Date:
+// Notes:
+// $Log: gs2e.c,v $
+//=============================================================================
+//
+
+// INCLUDE FILE DECLARATIONS //
+#include "adapter.h"
+#include "gs2e.h"
+#include "gudpdat.h"
+#include "gudpbc.h"
+#include "gudpuc.h"
+#include "gconfig.h"
+#include "printd.h"
+#include "mac.h"
+
+//#include "main.h"
+
+#include "eeprom.h"
+#include "ping.h"
+// NAMING CONSTANT DECLARATIONS //
+
+// MACRO DECLARATIONS //
+
+// GLOBAL VARIABLES DECLARATIONS //
+
+// LOCAL VARIABLES DECLARATIONS //
+static byte XDATA gs2e_State;
+static byte XDATA gs2e_ConnType;
+
+// LOCAL SUBPROGRAM DECLARATIONS //
+
+// ----------------------------------------------------------------------------
+// name    : GS2E_Task
+// purpose : 
+// Params        :
+// returns :
+// note    :
+// ----------------------------------------------------------------------------
+void GS2E_Task(void)
+{
+	GCONFIG_Task();
+	if (gs2e_ConnType == GS2E_CONN_UDP)
+	  GUDPDAT_Task();
+} // End of GS2E_Task() //
+
+// ----------------------------------------------------------------------------
+// name    : GS2E_Init()
+// purpose : Initialization
+// params  :
+// returns :
+// note    :
+// ----------------------------------------------------------------------------
+void GS2E_Init(void)
+{	
+	gs2e_State = GS2E_STATE_IDLE; 
+
+	if ((GCONFIG_GetNetwork() & GCONFIG_NETWORK_PROTO_UDP_BCAST) == GCONFIG_NETWORK_PROTO_UDP_BCAST)
+	  {
+	  GUDPBC_Init(GCONFIG_UDP_BCAST_SERVER_PORT);
+	  }
+	GUDPUC_Init(GCONFIG_UDP_UCAST_SERVER_PORT);
+
+	if ((GCONFIG_GetNetwork() & GCONFIG_NETWORK_PROTO_UDP) == GCONFIG_NETWORK_PROTO_UDP)
+	  {
+	  gs2e_ConnType = GS2E_CONN_UDP;
+	  GUDPDAT_Init(GCONFIG_GetServerDataPktListenPort());
+	  }
+	EEPROM_Init();
+} // End of GS2E_Init() //
+
+// ----------------------------------------------------------------------------
+// name    : GS2E_GetTaskState
+// purpose : 
+// params  :
+// returns :
+// note    :
+// ----------------------------------------------------------------------------
+byte GS2E_GetTaskState(void)
+{
+	return gs2e_State;
+} // End of GS2E_GetTaskState() //
+
+// ----------------------------------------------------------------------------
+// name    : GS2E_SetTaskState
+// purpose : 
+// params  :
+// returns :
+// note    :
+// ----------------------------------------------------------------------------
+void GS2E_SetTaskState(byte state)
+{
+	gs2e_State = state;
+} // End of GS2E_SetTaskState() //
+
+// ----------------------------------------------------------------------------
+// name    : GS2E_GetConnType
+// purpose : 
+// params  :
+// returns :
+// note    :
+// ----------------------------------------------------------------------------
+byte GS2E_GetConnType(void)
+{
+	return gs2e_ConnType;
+} // End of GS2E_GetConnType() //
+
+// End of gs2e.c //

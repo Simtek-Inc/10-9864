@@ -1,0 +1,1105 @@
+//----------------------------------------------------------------------------------------//
+//     Copyright (c) 2021     Simtek, Incorporated      All rights reserved.              //
+//                                                                                        //
+//     This is unpublished proprietary source code of Simtek, Inc                         //
+//                                                                                        //
+//     The copyright notice above does not evidence any actual or intended                //
+//     publication of such source code.                                                   //
+//========================================================================================//
+// 76-4415  for 10-9802-01                                                                //
+// Circuit boards used : 51-5330-01                                                       //
+// Used programs from C. Mason to start with                                              //
+//                                                                                        //
+//========================================================================================//
+// Module Name : Main.c                                                                   //
+// Purpose     : Main loop                                                                //
+//----------------------------------------------------------------------------------------//
+// Author      : Brandon Faas                                                             //
+// Date        : January 2026                                                            //
+// Revision    : -                                                                        //
+// Notes       : Shipped with instrument.                                                 //
+//----------------------------------------------------------------------------------------//
+                                                                                          //
+//----------------------------------------------------------------------------------------//
+//          include file declarations                                                     //
+//----------------------------------------------------------------------------------------//
+#include "reg80390.h"                                                                     //
+#include "main.h"                                                                         //
+#include "fpga.h"                                                                         //
+#include "adapter.h"                                                                      //
+#include "mstimer.h"                                                                      //
+#include "ax11000.h"                                                                      //
+#include "interrupt.h"                                                                    //
+#include "stoe.h"                                                                         //
+#include "dma.h"                                                                          //
+#include "tcpip.h"                                                                        //
+#include "printd.h"                                                                       //
+#include "delay.h"                                                                        //
+#include "intrins.h"                                                                      //
+#include "Hardware.h"                                                                     //
+#include "uart.h"                                                                         //
+#include "gconfig.h"                                                                      //
+#include "phy.h"                                                                          //
+#include "mac.h"                                                                          //
+#include "gudpdat.h"                                                                      //
+#include "uart.h"                                                                         //
+#include "gs2e.h"                                                                         //
+#include <string.h>                                                                       //
+#include <stdio.h>                                                                        //
+#include "CIRCUIT.H"                                                                      //
+#include "instrument.h"                                                                   //
+#include <math.h>                                                                         //
+#include "dhcpc.h"                                                                        //
+#include <stdlib.h>                                                                       //
+#include "eeprom.h"                                                                       //
+#include "util_menus.h"                                                                   //
+#include "hi8045.h"                                                                       //
+//#include "spi.h"                                                                          //
+//#include "spiapi.h"                                                                       //
+
+//----------------------------------------------------------------------------------------
+//                 naming #define declarations                                            //
+//----------------------------------------------------------------------------------------
+#define  RS422                            0                                               //
+#define  RS232                            1                                               //
+#define  DEDisable                        0                                               //
+#define  DEEnable                         1                                               //
+
+#ifdef DEBUG                                                                              //
+#define DBGMSG(A) {A}                                                                     //
+#else                                                                                     //
+#define DBGMSG(A) {}                                                                      //
+#endif                                                                                    //
+#define  TIME_OUT_COUNTER                 (20/SWTIMER_INTERVAL)                           // 20/swtimer_interval = x ms
+#define  SW_TIME_OUT_COUNTER              3000 // 3000 = 30 seconds                       // 30 seconds
+#define  DBG_TIME_OUT_COUNTER             100 // 100  =  1 seconds                        // 1 seconds 
+#define  RTC_TIME_OUT_COUNTER             100 // 100  =  1 seconds                        // 1 seconds * 86400 = 24 hours +/-120 seconds
+
+#define Serial                            0
+#define Ethernet                          1
+#define Host_Port                       (Ethernet)
+
+// MACRO DECLARATIONS //
+#if   ( Host_Port == Serial )
+#define     wrHost(p,c)    UART0_PutStr(p,c)
+#else
+#define     wrHost(p,c)    wrStrEthTxBuffer(p,c)
+#endif
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//           fpga #define declarations/data array structure                               //
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+//      fpga register addresses                                                           //
+//----------------------------------------------------------------------------------------
+//#define defaultaddress        0x00                                                        // default address to use after reset
+#define adrsfirmware1         0x20                                                        // firmware number and revision data
+#define adrsfirmware2         0x21                                                        // firmware number and revision data
+#define adrsfirmware3         0x22                                                        // firmware number and revision data
+#define adrsfirmware4         0x23                                                        // firmware number and revision data
+
+#define adc50                 0x50                                                        // address of switch bank 4 reader
+#define adc51                 0x51                                                        // address of switch bank 4 reader
+
+#define adrsA2DChannel0       0x50
+#define adrsA2DChannel1       0x51
+
+#define adrsexternalenables   0x80                                                        // address of control register for external hardware enable/disable
+
+//----------------------------------------------------------------------------------------
+//          external hardware control enable bits
+//----------------------------------------------------------------------------------------
+#define onSwCmnLo             0x02
+#define onSwCmnHi             0x01
+#define onRs422port           0x0C
+#define onRs422portDe         0x04
+#define onRs422portRe         0x08
+#define onRs233port           0x10
+//----------------------------------------------------------------------------------------
+//          commbined hardware control enable word
+//----------------------------------------------------------------------------------------
+#define defaultexternal       onRs233port                
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+#define adrsbitcontrol1       0x90   // USED TO TURN BITS ON AND OFF                      // address of discrete bit control bank 1
+#define adrspwmon01           0xA0   // USED TO ENABLE THE PWM TO THE CONTROLLED BIT      // address of the device enable latch bank 1
+#define defaultpwmctrl01      0xFD   // PWM OFF EXCEPT BIT 1                              // default off state of device enable bank = 0xFF
+
+#define adrsbitcontrol2       0x91                                                        // address of discrete bit control bank 2
+#define adrspwmon02           0xA1                                                        // address of the device enable latch bank 2
+#define defaultpwmctrl02      0xFF                                                        // default off state of device enable bank = 0x3F
+
+#define adrsbitcontrol3       0x92                                                        // address of discrete bit control bank 3
+#define adrspwmon03           0xA2                                                        // address of the device enable latch bank 3
+#define defaultpwmctrl03      0x3F                                                        // default off state of device enable bank = 0x3F
+
+#define defaultbitonbit3      0x3F   // ALL SOURCE BITS OFF                               // define the default state
+
+#define defaultdutycycle      0x0C00                                                      // default PWM duty cycle
+//----------------------------------------------------------------------------------------//
+//           end fpga #define declarations                                                //
+//----------------------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------------------//
+//          GLOBAL VARIABLES DECLARATIONS                                                 //
+//----------------------------------------------------------------------------------------//
+typedef struct app_buf {                                                                  //
+      ulong ipaddr;                                                                       //
+      byte  buf[100];                                                                     //
+      uint  uip_len;                                                                      //
+      uint  PayLoadOffset;                                                                //
+      byte  wait;                                                                         //
+}APP_BUF;                                                                                 //
+
+APP_BUF     app_arp_buf;                                                                  //
+
+ulong  processEthernetTraffic(ulong ptc, dls);                                            //
+//----------------------------------------------------------------------------------------//
+//          static variable declarations                                                  //
+//----------------------------------------------------------------------------------------//
+byte  EthTxBuffer[EthMaxTxSize];                                                          //
+uint              EthTxBufHead            = 0;                                            // array index to write data into the temporary buffer
+uint              EthTxBufTail            = 0;                                            // array index to transfer data into the actual transmit buffer
+uint              EthTxCount              = 0;                                            // number of bytes in the temporary buffer to transmit
+uint              EthTxBufIndx            = 0;                                            // number of bytes in the temporary buffer to transmit
+uint              HrtBeatCnt              = 0x00;                                         //
+static byte       MinMsgLen;                                                              //
+       byte       HardwareSettings;                                                       //
+//----------------------------------------------------------------------------------------//
+//          hardware specific definitions                                                 //
+//----------------------------------------------------------------------------------------//
+// ACC (0xE0) Bit Registers                                                               //
+sbit A_0                      = 0xE0;                                                     //
+sbit A_1                      = 0xE1;                                                     //
+sbit A_2                      = 0xE2;                                                     //
+sbit A_3                      = 0xE3;                                                     //
+sbit A_4                      = 0xE4;                                                     //
+sbit A_5                      = 0xE5;                                                     //
+sbit A_6                      = 0xE6;                                                     //
+sbit A_7                      = 0xE7;                                                     //
+
+
+//unsigned char bdata Status_byte_2;        // create a bit addressable byte
+//========================================================================================//
+//          port pin name definition                                                      //
+//----------------------------------------------------------------------------------------
+byte PinDefStr0[] = PORT0_PIN_NAMES;                                                      //
+byte PinDefStr1[] = PORT1_PIN_NAMES;                                                      //
+byte PinDefStr2[] = PORT2_PIN_NAMES;                                                      //
+byte PinDefStr3[] = PORT3_PIN_NAMES;                                                      //
+//========================================================================================//
+//          ethernet message frames                                                       //
+//========================================================================================//
+byte bufResetReq[bufResetMsgLength];                                                      //
+byte bufStatusRsp[bufStatusMsgLength];                                                    //                                         
+byte bufFirmwareRsp[bufFirmwareMsgLength];                                                //
+byte bufDimmingData[bufDimmingMsgLength];
+byte bufIndicatorData[bufIndicatorMsgLength];
+byte bufMeterData[bufMeterMsgLength];
+byte bufDisplayDimmingData[bufDisplayDimmingMsgLength]; 
+byte bufDisplayContrastData[bufDisplayContrastMsgLength];                                                             
+//----------------------------------------------------------------------------------------//
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//                serial variables                                                        //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+byte   stage;                                                                             //
+word   stagetimeout;                                                                      //
+
+byte  mRxBuf[128];    
+static word  mRxCnt;
+                                                              //
+byte    SwBank02Cnt;                                                                      // 
+#define SwBank02Delay 0x20;                                                               //
+byte    SwBank03Cnt;                                                                      // 
+#define SwBank03Delay 0x20;                                                               //
+byte    SwBank04Cnt;                                                                      // 
+#define SwBank04Delay 0x20;                                                               //
+//----------------------------------------------------------------------------------------//
+//                local variables declarations                                            //
+//----------------------------------------------------------------------------------------//
+byte fpgaOutputData[FPGADataLen];                                                         // data output from the FPGA -- switch/a2d/fpga revision
+byte bitmap[numof5841used];                                                               //
+uint ADCount;                                                                             //
+bool fDebugMode;                                                                          //
+bool fTransmitMode;                                                                       //
+byte ChngCnt;                                                                             //
+
+byte previousADC1;
+byte previousADC2;
+byte previousADC3;
+byte currentADC;
+
+// Dimming curve
+word xdata DimCurve[256] = {	0x0000,	0x0040,	0x0080,	0x00C0,	0x0100,	0x0141,	0x0181,	0x01C1,	0x0201,	0x2042,	0x0282,	0x02C2,	0x0302,	0x0343,	0x0383,	0x03C3,   // 0
+								0x0403,	0x0444,	0x0484,	0x04C4,	0x0504,	0x0545,	0x0585,	0x05C5,	0x0605,	0x0646,	0x0686,	0x06C6,	0x0706,	0x0747,	0x0787,	0x07C7,   // 1
+								0x0807,	0x0848,	0x0888,	0x08C8,	0x0908,	0x0949,	0x0989,	0x09C9,	0x0A09,	0x0A4A,	0x0A8A,	0x0ACA,	0x0B0A,	0x0B4B,	0x0B8B,	0x0BCB,   // 2
+								0x0C0B,	0x0C4C,	0x0C8C,	0x0CCC,	0x0D0C,	0x0D4D,	0x0D8D,	0x0DCD,	0x0E0D,	0x0E4E,	0x0E8E,	0x0ECE,	0x0F0E,	0x0F4F,	0x0F8F,	0x0FCF,   // 3
+								0x100F,	0x1050,	0x1090,	0x10D0,	0x1110,	0x1151,	0x1191,	0x11D1,	0x1211,	0x1252,	0x1292,	0x12D2,	0x1312,	0x1353,	0x1393,	0x13D3,   // 4
+								0x1413,	0x1454,	0x1494,	0x14D4,	0x1514,	0x1555,	0x1595,	0x15D5,	0x1615,	0x1655,	0x1696,	0x16D6,	0x1716,	0x1756,	0x1797,	0x17D7,   // 5
+								0x1817,	0x1857,	0x1898,	0x18D8,	0x1918,	0x1958,	0x1999,	0x19D9,	0x1A19,	0x1A59,	0x1A9A,	0x1ADA,	0x1B1A,	0x1B5A,	0x1B9B,	0x1BDB,   // 6
+								0x1C1B,	0x1C5B,	0x1C9C,	0x1CDC,	0x1D1C,	0x1D5C,	0x1D9D,	0x1DDD,	0x1E1D,	0x1E5D,	0x1E9E,	0x1EDE,	0x1F1E,	0x1F5E,	0x1F9F,	0x1FDF,   // 7
+								0x201F,	0x205F,	0x20A0,	0x20E0,	0x2120,	0x2160,	0x21A1,	0x21E1,	0x2221,	0x2261,	0x22A2,	0x22E2,	0x2322,	0x2362,	0x23A3,	0x23E3,   // 8
+								0x2423,	0x2463,	0x24A4,	0x24E4,	0x2524,	0x2564,	0x25A5,	0x25E5,	0x2625,	0x2665,	0x26A6,	0x26E6,	0x2726,	0x2766,	0x27A7,	0x27E7,   // 9
+								0x2827,	0x2867,	0x28A8,	0x28E8,	0x2928,	0x2968,	0x29A9,	0x29E9,	0x2A29,	0x2A69,	0x2AAA,	0x2AEA,	0x2B2A,	0x2B6A,	0x2BAA,	0x2BEB,   // A
+								0x2C2B,	0x2C6B,	0x2CAB,	0x2CEC,	0x2D2C,	0x2D6C,	0x2DAC,	0x2DED,	0x2E2D,	0x2E6D,	0x2EAD,	0x2EEE,	0x2F2E,	0x2F6E,	0x2FAE,	0x2FEF,   // B
+								0x302F,	0x306F,	0x30AF,	0x30F0,	0x3130,	0x3170,	0x31B0,	0x31F1,	0x3231,	0x3271,	0x32B1,	0x32F2,	0x3332,	0x3372,	0x33B2,	0x33F3,   // C
+								0x3433,	0x3473,	0x34B3, 0x34F4,	0x3534,	0x3574,	0x35B4,	0x35F5,	0x3635,	0x3675,	0x36B5,	0x36F6,	0x3736,	0x3776,	0x37B6,	0x37F7,   // D
+								0x3837,	0x3877,	0x38B7,	0x38F8,	0x3938,	0x3978,	0x39B8,	0x39F9,	0x3A39,	0x3A79,	0x3AB9,	0x3AFA,	0x3B3A,	0x3B7A,	0x3BBA,	0x3BFB,   // E
+								0x3C3B,	0x3C7B,	0x3CBB,	0x3CFC,	0x3D3C,	0x3D7C,	0x3DBC,	0x3DFD,	0x3E3D,	0x3E7D,	0x3EBD, 0x3EFE,	0x3F3E,	0x3F7E,	0x3FBE,	0x3FFF};  // F
+
+byte  acLightTableReadBack       = 0;
+byte  acDim2SlaveDisplay       	 = 0;
+byte   lightingcal;                                                     
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//                bit addressable register definitions                                    //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+word  idata Word1    _at_ 0x20;                                                     //
+byte  bdata WByte1   _at_ 0x20;                                                     //
+byte  bdata WByte0   _at_ 0x21;                                                     //
+sbit          bits00      = WByte0^0;                                                 //
+sbit          bits01      = WByte0^1;                                                 //
+sbit          bits02      = WByte0^2;                                                 //
+sbit          bits03      = WByte0^3;                                                 //
+sbit          bits04      = WByte0^4;                                                 //
+sbit          bits05      = WByte0^5;                                                 //
+sbit          bits06      = WByte0^6;                                                 //
+sbit          bits07      = WByte0^7;                                                 //
+sbit          bits08      = WByte1^0;                                                 //
+sbit          bits09      = WByte1^1;                                                 //
+sbit          bits10      = WByte1^2;                                                 //
+sbit          bits11      = WByte1^3;                                                 //
+sbit          bits12      = WByte1^4;                                                 //
+sbit          bits13      = WByte1^5;                                                 //
+sbit          bits14      = WByte1^6;                                                 //
+sbit          bits15      = WByte1^7;                                                 //
+
+//;************************************************
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          action counters                                                               //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+uint acResetRequest;                                  // host requested       //          //
+uint acFirmwareRequest;                               // host requested       //          //
+uint acStatusRequest;                                 // host requested       //          //
+uint acDimmingRequest;
+uint acMeterRequest;
+uint acIndicatorRequest;
+uint acDisplayDimmingRequest;
+uint acDisplayContrastRequest;
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//                local subprogram prototype declarations                                 //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+static void UpdateIpSettings(ulong);                                                      // update the IP and port setting
+void  NOP(uint loop);                                                                     //
+// ==== function used to access the TOE buffers and controls =============================//
+uint  wrChrEthTxBuffer(byte ch, uint Count);                                              //
+uint  wrStrEthTxBuffer(byte* pData, uint cnt);                                            // write data to the ethernet transmit buffer
+void  printFirmwareInformation();                                                         //
+void  printDeviceConfigurationInformation();                                              //
+void  printdHex2Bin(byte num);                                                            //
+void  writeEthTxCount(uint TempCount);                                                    //
+uint  readEthTxBufCount(void);                                                            //
+// ==== functions to place data in the ethernet buffer for transmission ==================//
+void  processResetRsp(void);                                                              //
+void  processFirmwareRsp(void);                                                           //
+void  processStatusRsp(void); 
+void  processDimmingRsp(void);
+void  processIndicatorRsp(void);
+void  processDisplayDimmingRsp(void);
+void  processDisplayContrastRsp(void);
+                                                            
+// ==== functions used to manipulate the FPGA                           ==================//
+void process_FPGA_data(void);															  //
+//
+word xlat2DimCurve(byte index);
+word* addresslookup(byte index);
+//== ---------------------------------------------------------------------------------- ==//
+//== -                       local subprogram definitions                             - ==//
+//== ---------------------------------------------------------------------------------- ==//
+// name    : NOP                                                                          //
+// purpose : create a small runtime delay                                                 //
+// params  : the number of times to loop                                                  //
+// returns : void                                                                         //
+// notes   :                                                                              //
+//----------------------------------------------------------------------------------------//
+void NOP(uint loop)                                                                       //
+{
+      uint i;                                                                             //
+
+      for (i = 0; i < loop; i++)                                                          //
+       {    _nop_();    }                                                                 //
+}
+
+// name    : xlat2DimCurve                                                                          //
+// purpose :                                                 //
+// params  :                                                  //
+// returns :                                                                          //
+// notes   :                                                                              //
+//----------------------------------------------------------------------------------------//
+word xlat2DimCurve(byte index)
+{
+//        printd("dimcurve[%3dx]\n\r",DimCurve[index]);
+        return DimCurve[index];
+}
+
+// name    : addresslookup                                                                          //
+// purpose :
+// params  :
+// returns :
+// notes   :                                                                              //
+//----------------------------------------------------------------------------------------//
+word* addresslookup(byte index)                                                           // 
+{
+      word *ptr;
+
+        ptr = &DimCurve[index];
+//      switch(index)                                                                       // 
+//        {
+//        case 0x00 : ptr = &DimCurve[0];                                break;             // 
+//        case 0x01 : ptr = &DimCurve[0];                                break;             // 
+//        case 0x02 : ptr = &DimCurve[0];                                break;             // 
+//        case 0x03 : ptr = &DimCurve[0];                                break;             // 
+//        default   : ptr = 0;                                           break;             // 
+//        }
+      return ptr;
+}
+
+//----------------------------------------------------------------------------------------
+// name    : wrEthTxBuffer(byte ch, uint Count)                                           //
+// purpose : write data to the ring buffer to transmit over Ethernet                      //
+// params  : Data byte to write, Count of bytes currently in buffer                       //
+// returns : updated count of bytes in buffer                                             //
+// notes   :                                                                              //
+//----------------------------------------------------------------------------------------
+uint wrChrEthTxBuffer(byte ch, uint Count)                                                // write data to the ethernet transmit buffer
+{
+      EthTxBuffer[EthTxBufIndx] = ch;                                                     // add the data to the ethernet buffer
+      EthTxBufIndx++;                                                                     // update the ethernet buffer index
+      Count++;                                                                            // update the count showing the number of bytes in the buffer
+      if (EthTxBufIndx == EthMaxTxSize)                                                   // check to see if the index is at the maximum
+        EthTxBufIndx = 0;                                                                 // reset the index to the first byte of the buffer
+      return Count;                                                                       // pass the buffer count back to the calling routine
+}
+
+//----------------------------------------------------------------------------------------
+// name    : wrStrEthTxBuffer(byte* pData, uint cnt)                                      //
+// purpose : write data to the ring buffer to transmit over Ethernet                      //
+// params  : pointer to the data bytes to write, number of bytes to write                 //
+// returns : number of bytes sucessfully written into the buffer                          //
+// notes   :                                                                              //
+//----------------------------------------------------------------------------------------
+uint wrStrEthTxBuffer(byte* pData, uint cnt)                                              // write data to the ethernet transmit buffer
+{
+      uint TmpCnt;                                                                        //
+      uint offset;                                                                        //
+
+      if((EthTxBufIndx + cnt) > EthMaxTxSize)                                             // make sure that the number of bytes to write added to the number
+      {                                                                                   //  of bytes in the buffer already is not greater then the buffer
+        offset = EthMaxTxSize - EthTxBufIndx;                                             // find the number of bytes that will fit in the buffer before overflow
+        memmove(&EthTxBuffer[EthTxBufIndx], pData, offset);                               // fill the remainder of the buffer with the given data
+        memmove(&EthTxBuffer[ix01], pData+offset, cnt - offset);                          // add the remainder of the given data to the begining of the buffer
+        }
+      else                                                                                // else all of the given data will still fit in the buffer
+        {
+        memmove(&EthTxBuffer[EthTxBufIndx], pData, cnt);                                  // place all of the given data into the buffer
+        }
+      EthTxBufIndx += cnt;                                                                // make sure that the index points at the first empty byte
+      EthTxBufIndx &= EthMaxTxMask;                                                       // mask the index to wrap the buffer around into a ring
+      TmpCnt = readEthTxBufCount() + cnt;                                                 // adjust the current buffer count
+      writeEthTxCount(TmpCnt);
+      return TmpCnt;                                                                      // return the number of bytes in the buffer
+}
+
+//----------------------------------------------------------------------------------------
+// name    : WriteEthTxCount(uint TempCount)                                              //
+// purpose : update the count checked by Ethernet process                                 //
+// params  : updated count                                                                //
+// returns : void                                                                         //
+// notes   :                                                                              //
+//----------------------------------------------------------------------------------------
+void writeEthTxCount(uint TempCount)                                                      // update the global ethernet transmit buffer count
+{
+      EthTxCount = TempCount;                                                             // write the new count to the global buffer
+}
+
+//----------------------------------------------------------------------------------------
+// name    : main_readEthChar(byte* pDat)                                                 //
+// purpose : retrieve data from buffer to place in ethernet transmit buffer               //
+// params  : pointer to variable to return                                                //
+// returns : count of data left in buffer                                                 //
+// notes   : this routine replaced GetEthChar defined in main.c.                          //
+//----------------------------------------------------------------------------------------
+uint main_readEthChar(byte* pDat)                                                         // read a data byte from the ethernet buffer
+{
+      uint temp;                                                                          //
+      
+      temp = readEthTxBufCount();                                                         // get the current ethernet buffer count
+      if (temp > 0)                                                                       // see if there are any bytes in the buffer
+        {
+        *pDat = EthTxBuffer[EthTxBufTail];                                                // write the data to the location pointed to by the pointer
+        EthTxBufTail++;                                                                   // update the ethernet ring buffer index
+        if (EthTxBufTail == EthMaxTxSize)                                                 // check the index to make sure that the index remains within the buffer space 
+          {  EthTxBufTail = 0;  }                                                         // reset the index to the first byte of the buffer
+        EthTxCount--;                                                                     // update the count of the bytes in the buffer
+        return EthTxCount;                                                                // pass the altered count back to the calling routine
+        }
+      return 0;                                                                           // write the default value for the count
+}
+
+//----------------------------------------------------------------------------------------
+// name    : readEthTxBufCount(void)                                                      //
+// purpose : read the current number of bytes in the Ethernet ring buffer                 //
+// params  : void                                                                         //
+// returns : current number of bytes in the Ethernet ring buffer                          //
+// notes   :                                                                              //
+//----------------------------------------------------------------------------------------
+uint readEthTxBufCount(void)                                                               // retrieve the current number of bytes in the ethernet transmit buffer
+{
+      return EthTxCount;                                                                  // pass the ethernet transmit buffer to the calling routine
+}
+
+//----------------------------------------------------------------------------------------
+// name    : processResetRsp                                                              //
+// purpose : execute all steps required for a response                                    //
+// params  : void                                                                         //
+// returns : void                                                                         //
+// notes   :                                                                              //
+//----------------------------------------------------------------------------------------//
+void  processResetRsp(void)                                                               //
+{                                                                                         //
+      int   i     = 0;                                                                    //
+      byte  tmp   = 0;                                                                    //
+      char  ch    = ' ';                                                                  //
+      uint  port;                                                                         //
+	  word  firmwaretimeout = 10;    													  //
+                                                                                          //
+      if (acResetRequest != 0)                                                            //
+        {                                                                                 //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          initailize the message buffers                                                //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+        port = GCONFIG_GetServerDataPktListenPort();                                      // get the port number used by the device
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          initailize the message buffers device host communications                     //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+        strncpy(&bufResetReq[ix01],resetdefault,sizeof(resetdefault));                    //  reset buffer (not used)
+        strncpy(&bufFirmwareRsp[ix01],firmwaredefault,sizeof(firmwaredefault));           //  firmware rsp (gets written to in reset(here) and process serial data)
+        strncpy(&bufStatusRsp[ix01],statusdefault,sizeof(statusdefault));                 //  status rsp   (gets written to in check switches and process serial data)
+		strncpy(&bufDimmingData[ix01],dimmingdefault,sizeof(dimmingdefault));
+		strncpy(&bufIndicatorData[ix01],indicatordefault,sizeof(indicatordefault));
+		strncpy(&bufDisplayDimmingData[ix01],displaydimmingdefault,sizeof(displaydimmingdefault));
+		strncpy(&bufDisplayContrastData[ix01],displaycontrastdefault,sizeof(displaycontrastdefault));
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          reset the external hardware functions                                         //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+        LogicRst = 1;                                                                     // activate FPGA reset
+        DELAY_Ms(5);                                                                      // wait for the FPGA to see the reset signal
+        LogicRst = 0;                                                                     // activate FPGA reset
+        DELAY_Ms(10);                                                                     // wait for the FPGA to see the reset signal
+        writeFpgaData(adrsexternalenables, defaultexternal, 5);                           // 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          initialize the action counters to zero                                        //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+        acResetRequest           = 0;                                                     // clear the display change request flag
+		acStatusRequest          = 0;
+        acFirmwareRequest        = 0;                                                     // clear the firmware response action count
+        acDimmingRequest	     = 1;
+		acIndicatorRequest	     = 1;
+		acDisplayDimmingRequest  = 1;
+		acDisplayContrastRequest = 1;
+
+                                                                                          //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          initialize the menu for debug port operations                                 //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+        UTIL_MenuInit();                                                                  // process any messages entered in the debug window
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+        Word1   = readFpgaData(adrsfirmware1,8);                                            // get the fpga firmware data MSB
+        bufFirmwareRsp[ix06] = WByte0;                                                        // format and write the data to the firmware message array 8th byte
+        Word1   = readFpgaData(adrsfirmware2,8);                                            // get the fpga firmware data MSB
+        bufFirmwareRsp[ix07] = WByte0;                                                        // format and write the data to the firmware message array 9th byte
+        Word1   = readFpgaData(adrsfirmware3,8);                                            // get the fpga firmware data MSB
+        bufFirmwareRsp[ix08] = WByte0;                                                        // format and write the data to the firmware message array 9th byte
+        Word1   = readFpgaData(adrsfirmware4,8);                                            // get the fpga firmware data MSB
+        bufFirmwareRsp[ix09] = WByte0;                                                        // format and write the data to the firmware message array 9th byte                                                                                       //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+        //bufDimmingData[ix02]    = 0;
+		//bufIndicatorData[ix02]  = 0;
+
+		printd("Hardware init           : pass\n\r");                                     //
+        HardwareSettings = 0;                                                             //
+
+      }                                                                           
+}                                                                                         //
+                                                                                          //
+//----------------------------------------------------------------------------------------
+// name    : processFirmwareRsp                                                           //
+// purpose :                                                                              //
+// params  : void                                                                         //
+// returns : void                                                                         //
+// notes   :   processStatusRsp                                                                           //
+//----------------------------------------------------------------------------------------
+void processFirmwareRsp(void)                                                             //
+{                                                                                         //         
+      if (acFirmwareRequest > 0)                                                          //
+        {                                                                                 //
+        wrHost(&bufFirmwareRsp[ix01], bufFirmwareMsgLength);                             // send the host a firmware response message
+        acFirmwareRequest = 0;                                                              // clear the status response action count
+        }                                                                                 //
+}                                                                                         //                                                                                         //
+//----------------------------------------------------------------------------------------
+// name    : processStatusRsp                                                             //
+// purpose :                                                                              //
+// params  : void                                                                         //
+// returns : void                                                                         //
+// notes   :                                                                              //
+//----------------------------------------------------------------------------------------
+void processStatusRsp(void)                                                               //
+{                                                                                         //         
+      if (acStatusRequest > 0)                                                            //
+        {                                                                                 //
+          wrHost(&bufStatusRsp[ix01], bufStatusMsgLength);                                  				  // send the host a firmware response message
+          acStatusRequest = 0;                                                            // clear the status response action count
+        }                                                                                 //
+}
+
+//----------------------------------------------------------------------------------------
+// name    : process_FPGA_data                                                          //
+// purpose : Read and process the switch and potentiometer data from the fpga             //
+// params  : void                                                                         //
+// returns : void                                                                         //
+// notes   :                                                                              //
+//----------------------------------------------------------------------------------------
+void process_FPGA_data(void) 															  //
+{
+	unsigned char switch_data = 0x00;
+	
+	switch_data = readFpgaData(0x61,8);
+	bufStatusRsp[ix02] = ~switch_data;
+	
+    switch_data = readFpgaData(0x62,8);	
+	bufStatusRsp[ix03] = ~switch_data;
+	
+	switch_data = readFpgaData(0x63,8);	
+	bufStatusRsp[ix04] = ~switch_data;
+
+	switch_data = readFpgaData(0x64,8);	
+	bufStatusRsp[ix05] = ~switch_data;
+
+	switch_data = readFpgaData(0x65,8);	
+	bufStatusRsp[ix06] = switch_data;
+
+	switch_data = readFpgaData(0x66,8);	
+	bufStatusRsp[ix07] = switch_data;
+	                                 		
+}
+
+//----------------------------------------------------------------------------------------
+// name    : processDimmingRsp                                                            //
+// purpose : Translate the dimming table data to the fpga                                 //
+// params  : void                                                                         //
+// returns : void                                                                         //
+// notes   :                                                                              //
+//----------------------------------------------------------------------------------------
+void  processDimmingRsp(void)                                                             //
+{
+    char index;//, test1, test2;
+	word bit16_dim_word;
+
+    if(acDimmingRequest > 0x00)                                                           // 
+      {
+	      index   = 0;                                                                          
+	      index   = bufDimmingData[ix02];                                         
+	      bit16_dim_word = xlat2DimCurve(index);
+		  
+		  //setDimmingLvl(J8_pin_07, bit16_dim_word , 14);                                             
+	      
+		  writeFpgaData(0xC1, bit16_dim_word, 14);		  
+
+		  acDimmingRequest = 0;                                                               
+	
+		  // debug testing
+		  //test1 =  bit16_dim_word >> 8;
+		  //test2 =  bit16_dim_word & 0xFF;
+		  //printd(" %bx ", test1);
+		  //printd(" %bx ", test2);
+		  //printd("\n\r");
+	
+		  //readFpgaData(0xC1, 14);
+		  //printd(" %bx ", btmpH);
+		  //printd(" %bx ", btmpL);
+		  //printd("\n\r");
+		  
+      }
+}
+
+//----------------------------------------------------------------------------------------
+// name    : processIndicatorRsp                                                            //
+// purpose : Set the indicator dimming on the instrument                                 //
+// params  : void                                                                         //
+// returns : void                                                                         //
+// notes   :                                                                              //
+//----------------------------------------------------------------------------------------
+void  processIndicatorRsp(void)                                                             //
+{
+    char index;//, test1, test2;
+	word bit16_dim_word;
+
+    if(acIndicatorRequest > 0x00)                                                           // 
+    {
+		index   = 0;                                                                          
+		index   = bufIndicatorData[ix02];                                         
+		bit16_dim_word = xlat2DimCurve(index);
+		                                             
+		writeFpgaData(0xC2, bit16_dim_word, 14);		  
+
+		acIndicatorRequest = 0;	  
+    }
+}
+
+//----------------------------------------------------------------------------------------
+// name    : processDisplayDimmingRsp                                                            //
+// purpose : Set the display dimming on the instrument                                 //
+// params  : void                                                                         //
+// returns : void                                                                         //
+// notes   :                                                                              //
+//----------------------------------------------------------------------------------------
+void  processDisplayDimmingRsp(void)                                                             //
+{
+	//char index;
+	int index;
+   	unsigned char pwm_100;
+	unsigned char pwm_10;
+	unsigned char pwm_1;
+
+    if(acDisplayDimmingRequest > 0x00)                                                           // 
+    {
+		index   = 0;                                                                          
+		index   = bufDisplayDimmingData[ix02];                                         
+		  
+		pwm_100 	= index / 100;
+		pwm_10 		= (index % 100) / 10;
+		pwm_1 		= index % 10;
+
+		//uart1_PutChar(0x56);// V
+		//uart1_PutChar(0x50);// P
+		//uart1_PutChar(0x31);// 1
+		//uart1_PutChar(0x34);// 4
+		//uart1_PutChar(0x20);// 
+		//uart1_PutChar(0x50);// P
+		//uart1_PutChar(0x57);// W
+		//uart1_PutChar(0x4D);// M
+		//uart1_PutChar(0x56);// V
+		//uart1_PutChar(0x41);// A
+		//uart1_PutChar(0x4C);// L
+		//uart1_PutChar(0x24);// $
+		//uart1_PutChar(0x31);// 1
+		//uart1_PutChar(0x20);// 
+		//uart1_PutChar(pwm_100 | 0x30);	// 2
+		//uart1_PutChar(pwm_10 | 0x30);	// 5
+		//uart1_PutChar(pwm_1 | 0x030);	// 5
+		//uart1_PutChar(0x0D);// 5
+
+		uart0_PutChar(0x56);// V
+		uart0_PutChar(0x50);// P
+		uart0_PutChar(0x31);// 1
+		uart0_PutChar(0x34);// 4
+		uart0_PutChar(0x20);// 
+		uart0_PutChar(0x50);// P
+		uart0_PutChar(0x57);// W
+		uart0_PutChar(0x4D);// M
+		uart0_PutChar(0x56);// V
+		uart0_PutChar(0x41);// A
+		uart0_PutChar(0x4C);// L
+		uart0_PutChar(0x24);// $
+		uart0_PutChar(0x31);// 1
+		uart0_PutChar(0x20);// 
+		uart0_PutChar(pwm_100 | 0x30);	// 2
+		uart0_PutChar(pwm_10 | 0x30);	// 5
+		uart0_PutChar(pwm_1 | 0x030);	// 5
+		uart0_PutChar(0x0D);// 5
+		
+		//printd("\n\r");
+		acDisplayDimmingRequest = 0;	  
+    }
+}
+
+//----------------------------------------------------------------------------------------
+// name    : processDisplayContrastRsp                                                            //
+// purpose : Set the display contrast on the instrument                                 //
+// params  : void                                                                         //
+// returns : void                                                                         //
+// notes   :                                                                              //
+//----------------------------------------------------------------------------------------
+void  processDisplayContrastRsp(void)                                                             //
+{	
+	//char index;
+	int index;
+	unsigned char contrast_100;
+	unsigned char contrast_10;
+	unsigned char contrast_1;
+
+	if(acDisplayContrastRequest > 0x00)                                                           // 
+    {
+		index   = 0;                                                                          
+		index   = bufDisplayContrastData[ix02];                                         
+		  
+		contrast_100 	= index / 100;
+		contrast_10 	= (index % 100) / 10;
+		contrast_1 		= index % 10;
+	
+		//uart1_PutChar(0x56);// V
+		//uart1_PutChar(0x50);// P
+		//uart1_PutChar(0x31);// 1
+		//uart1_PutChar(0x34);// 4
+		//uart1_PutChar(0x20);// 
+		//uart1_PutChar(0x43);// C
+		//uart1_PutChar(0x54);// T
+		//uart1_PutChar(0x52);// R
+		//uart1_PutChar(0x53);// S
+		//uart1_PutChar(0x54);// T
+		//uart1_PutChar(0x56);// V
+		//uart1_PutChar(0x41);// A
+		//uart1_PutChar(0x4C);// L
+		//uart1_PutChar(0x24);// $
+		//uart1_PutChar(0x31);// 1
+		//uart1_PutChar(0x20);// 
+		//uart1_PutChar(contrast_100 | 0x30); // 2
+		//uart1_PutChar(contrast_10 | 0x30);	// 5
+		//uart1_PutChar(contrast_1 | 0x030);	// 5
+		//uart1_PutChar(0x0D);// 5
+
+		uart0_PutChar(0x56);// V
+		uart0_PutChar(0x50);// P
+		uart0_PutChar(0x31);// 1
+		uart0_PutChar(0x34);// 4
+		uart0_PutChar(0x20);// 
+		uart0_PutChar(0x43);// C
+		uart0_PutChar(0x54);// T
+		uart0_PutChar(0x52);// R
+		uart0_PutChar(0x53);// S
+		uart0_PutChar(0x54);// T
+		uart0_PutChar(0x56);// V
+		uart0_PutChar(0x41);// A
+		uart0_PutChar(0x4C);// L
+		uart0_PutChar(0x24);// $
+		uart0_PutChar(0x31);// 1
+		uart0_PutChar(0x20);// 
+		uart0_PutChar(contrast_100 | 0x30); // 2
+		uart0_PutChar(contrast_10 | 0x30);	// 5
+		uart0_PutChar(contrast_1 | 0x030);	// 5
+		uart0_PutChar(0x0D);// 5
+	
+		//printd("\n\r");
+		acDisplayContrastRequest = 0;	  
+    }
+}
+
+//----------------------------------------------------------------------------------------
+// name    : UpdateIpSettings                                                             //
+// purpose :                                                                              //
+// params  : void                                                                         //
+// returns : void                                                                         //
+// notes   :                                                                              //
+//---------------------------------------------------------------------------------------- 
+void UpdateIpSettings(ulong ip)                                                           // Update IP address, subnet mask, gateway IP address and DNS IP address
+{                                                                                         //
+      if (ip > 0)                                                                         // check the IP to see if it is valid
+        {                                                                                 //
+        printd("IP  : %bu.%bu.%bu.%bu\n\r", (byte) ((ip >> 24) & 0x000000FF),             // write the IP address to the user debug port
+                                            (byte) ((ip >> 16) & 0x000000FF),             //
+                                            (byte) ((ip >> 8)  & 0x000000FF),             //
+                                            (byte) ( ip        & 0x000000FF));            //
+        }                                                                                 //
+      else                                                                                // the IP was valid
+        if (ip == 0)                                                                      // check the IP to see if it is valid
+          {                                                                               //
+          ulong mask = GCONFIG_GetNetmask();                                              // retrieve the default net mask
+          ip = GCONFIG_GetServerStaticIP();                                               // retrieve the static IP
+          TCPIP_SetIPAddr(ip);                                                            // write the default IP addess into the DCB
+          STOE_SetIPAddr(ip);                                                             // write the default IP addess into the DCB
+          TCPIP_SetSubnetMask(mask);                                                      // write the default net mask into the DCB
+          STOE_SetSubnetMask(mask);                                                       // write the default net mask into the DCB
+          }                                                                               //
+      GS2E_Init();                                                                        //
+} // End of UpdateIpSettings //                                                           //
+//----------------------------------------------------------------------------------------
+// name    : printFirmwareInformation                                                     //
+// purpose : display the  firmware information in the debug window                        //
+// params  : void                                                                         //
+// returns : void                                                                         //
+// note    :                                                                              //
+//----------------------------------------------------------------------------------------
+void  printFirmwareInformation()                                                          //
+{
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+    printd("uC Firmware PN          : ");                                                 // output the firmware data for the master processor
+    printd("%02bx-",   bufFirmwareRsp[ix02]);                                             //
+    printd("%02bx",    bufFirmwareRsp[ix03]);                                             //
+    printd("%02bx",    bufFirmwareRsp[ix04]);                                             //
+    printd(" : %c\n\r",bufFirmwareRsp[ix05]);                                             //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+    printd("FPGA Firmware PN        : ");                                                 // output the firmware data for the slave 0 processor
+    printd("%02bx-",   bufFirmwareRsp[ix06]);                                             //
+    printd("%02bx",    bufFirmwareRsp[ix07]);                                             //
+    printd("%02bx",    bufFirmwareRsp[ix08]);                                             //
+    printd(" : %c\n\r",bufFirmwareRsp[ix09]);                                             //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+}
+
+//----------------------------------------------------------------------------------------
+// name    : printDeviceConfigurationInformation                                          //
+// purpose : show the user the device information in the debug window                     //
+// params  : void                                                                         //
+// returns : void                                                                         //
+// notes   :                                                                              //
+//----------------------------------------------------------------------------------------
+void  printDeviceConfigurationInformation()                                               //
+{
+    printd("Debug Routines          : ");                                                 //
+    if(fDebugMode == OFF)                                                                 // get the state of the debug bit
+      printd("disabled\n\r");                                                             // alert the user to port status
+    else                                                                                  //
+      printd("enabled\n\r");                                                              // alert the user to port status
+    printd("Transmit Mode           : ");                                                 // alert the user to port status
+    if(fDebugMode == OFF)                                                                 // get the state of the debug bit
+      {
+      if(fTransmitMode == Server)                                                         // get the state of the client port bit
+        printd("Server\n\r");                                                             // alert the user to port status
+      else                                                                                //
+        printd("Client\n\r");                                                             // alert the user to port status
+      }
+    else                                                                                  //
+      printd("Server\n\r");                                                               // alert the user to port status
+    gconfig_ExDisplayConfigData();                                                        //
+    printd("*****************************************************\n\r");                  //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          display the firmware information for all programs in the debug window         //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+    printFirmwareInformation();                                                           //
+    printd("*****************************************************\n\r");                  //
+}
+
+//----------------------------------------------------------------------------------------
+// name    : processEthernetTraffic                                                       //
+// purpose : check for new Ethernet traffic and process new data                          //
+// params  : last software timer count, display link speed flag                           //
+// returns : current timer count                                                          //
+// notes   :                                                                              //
+//----------------------------------------------------------------------------------------
+ulong processEthernetTraffic(ulong ptc, dls)                                              //
+{
+    ulong tc;                                                                             // current time count
+    byte  linkSpeed = 0;                                                                  //
+    
+    tc              = (uint)SWTIMER_Tick();                                               // get the current timer count
+    if ((tc - ptc) >= TIME_OUT_COUNTER)                                                   // see if the difference in the curent & last time differs more then the timeout
+      {
+      ptc           = tc;                                                                 // set the last time to the current time
+      TCPIP_PeriodicCheck();                                                              // check the for any TCPIP traffic
+      }
+    STOE_ProcessInterrupt();                                                              // process all TOE buffers input/output
+    if (MAC_GetInterruptFlag())                                                           // get the data for this device
+      { linkSpeed   = MAC_ProcessInterruptExt(); }                                        // find the linkage speed, and process device traffic
+    if(dls == ON) printd("Ethernet Link Speed = bps\n\r", linkSpeed);                     // display the linkage speed
+    return ptc;                                                                           // return the current timer count
+}
+
+//----------------------------------------------------------------------------------------
+// name    : setupEthernet                                                                //
+// purpose : initailize and start all of the Ethernet processes                           //
+// params  : enabled                                                                      //
+// returns : the last updated timer count                                                 //
+// notes   :                                                                              //
+//----------------------------------------------------------------------------------------
+ulong setupEthernet(byte enabled)
+{
+    ulong ip;                                                                             //
+    ulong mask;                                                                           //
+    byte  cmdDhcpFlag      = 0;                                                           //
+    ulong dhcpTimeStart    = 0;                                                           //
+    ulong swtc;                                                                           //
+
+    if(enabled == TRUE)                                                                   //
+      {
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          initialize network adapter                                                    //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+      ETH_Init();                                                                         //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          initailize the device configurationnitialization                              //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+      GCONFIG_Init();                                                                     //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          iniailize the software timer                                                  //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+      SWTIMER_Init();                                                                     //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          enable transmit socket for runtime mode                                       //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+      gudpdat_ClientOpen(TrxSocket);                                                      //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          Start the Ethernet Engine and Software Timer for DMA                          //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+      ETH_Start();                                                                        // start the ethernet process
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          Start the Ethernet Engine and Software Timer for DMA                          //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+      SWTIMER_Start();                                                                    // start the software timer
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          initailize the hardware DCB                                                   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+      mask    = GCONFIG_GetNetmask();                                                     //
+      ip      = GCONFIG_GetServerStaticIP();                                              //
+      TCPIP_SetIPAddr(ip);                                                                //
+      STOE_SetIPAddr(ip);                                                                 //
+      TCPIP_SetSubnetMask(mask);                                                          //
+      STOE_SetSubnetMask(mask);                                                           //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          update device IP and port settings                                            //
+      if ((GCONFIG_GetNetwork() & GCONFIG_NETWORK_DHCP_ENABLE) == GCONFIG_NETWORK_DHCP_ENABLE)
+        {
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          initialize network adapter                                                    //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+        printd("DHCP     init           : ");                                             //
+        if (DHCP_Init())                                                                  //
+          printd("pass\n\r");                                                             //
+        else
+          printd("**ERROR**\n\r");                                                        //
+        printd("DHCP Assigned IP    : ");                                                 // tell user that the DHCP process has started
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//    start the DHCP engine                                                               //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+        DHCP_Start();                                                                     // start the DHCP process
+        cmdDhcpFlag   = 1;                                                                // set the DHCP initailization flag to start
+        dhcpTimeStart = SWTIMER_Tick();                                                   // record the DHCP process start time
+        }
+      else                                                                                //
+        {
+        ip            = 0;                                                                // update the IP settings to the static IP and port
+        cmdDhcpFlag   = 0;                                                                // set the DHCP initailization flag to bypass
+        }
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          start DHCP process loop                                                       //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+      DELAY_Ms(1000);                                                                     // wait 1S to give the internal hardware time to start up
+      while(cmdDhcpFlag == 1)                                                             // check the DHCP flag to see if the DHCP process has completed
+        {
+        printd("DHCP response -- ");                                                      //
+        if (DHCP_GetState() > DHCP_IDLE_STATE)                                            // see if the DHCP process is in the beginning idle state
+          { DHCP_Send(); }                                                                // send a DHCP request to the DHCP host
+        else                                                                              // the DHCP process is not in IDLE, execute the next step
+          { 
+          ulong ip = STOE_GetIPAddr();                                                    // reteieve the DHCP host proposed IP
+          if (ip == 0)                                                                    // make sure the proposed IP was not invalid
+            printd(" fail!\n\r");                                                         // let the host know that the DHCP process failed
+          cmdDhcpFlag = 0;                                                                // set the DHCP process flag to complete
+          }//if (DHCP_GetState() > DHCP_IDLE_STATE)
+        swtc = processEthernetTraffic(0, ON);                                             // check for new Ethernet traffic and process new data
+        }//while(cmdDhcpFlag == 1)do
+      UpdateIpSettings(ip);                                                               // update IP address, subnet mask, gateway IP address and DNS IP address
+      printd("*****************************************************\n\r");                // 
+      }
+      return swtc;                                                                        // return the software timer count
+}
+
+//----------------------------------------------------------------------------------------
+// name    : main                                                                         //
+// purpose : execute the main loop of the program as long as powered                      //
+// params  : void                                                                         //
+// returns : void                                                                         //
+// notes   :                                                                              //
+//----------------------------------------------------------------------------------------
+void main(void)
+{
+      uint  temp16 = 1;                                                                   //
+      byte  sysInitFlag = 1;                                                              //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+      byte  linkFlag = 0;                                                                 //
+      byte  cmdDhcpFlag = 0;                                                              //
+      ulong dhcpTimeStart = 0;                                                            //
+//      ulong timeCount;                                                                    //
+      ulong preTimeCount;                                                                 //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          Start Main Code                                                               //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+      ExecuteRuntimeFlag     = 1;                                                         //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          system initiation                                                             //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+      AX11000_Init();                                                                     // initailize the AX110xx setup registers
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          uart interface initiation                                                     //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+      uart_Init(0,Baud___9600, FALSE);                                                    // setup port 0 for 8,1,1n, and baudrate
+	  //uart_Init(0,Baud_115200, FALSE);
+	  uart_Init(1,Baud___9600, FALSE);                                                    // setup port 1 for 8,1,1n, and 9600bps
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          uart interface initiation                                                     //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+      printd("Instrument Part Number  : %s\n\r",SIMTEK_Inst_Number);                      //
+      printd("Firmware Last Revised   : %s %s\n\r",__DATE__,__TIME__);                    // c:\tftpd64
+      printd("Ethernet Library Ver.   : %s\n\r", GCONFIG_VERSION_STRING);                 //
+      printd("*********************************************************\n\r");            //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          uart interface initiation                                                     //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+      printd("UART-0   init           : pass   ");                                        //
+      printd("baud : %02bx \n\r",Baud___9600);                                            // show the user the baudrate
+      printd("UART-1   init           : pass\n\r");                                       //
+      printd("*****************************************************\n\r");                // print this in the debug widow to ease readability for user
+	  MinMsgLen = DefaultMsgLen;                                                          // set the minimum message length
+	  stagetimeout = 5000;
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          initailize the device configuration                                           //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+      preTimeCount = setupEthernet(TRUE);                                                 // initailize and start all of the Ethernet processes
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          initialize harware                                                            //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+      LogicRst                = 1;                                                        // activate FPGA reset
+      DELAY_Ms(5);                                                                        // wait for the FPGA to see the reset signal
+      LogicRst                = 0;                                                        // activate FPGA reset
+      acResetRequest          = 1;                                                        //
+	  P0 = 0xFF;
+      processResetRsp();                                                                  // reset all functions to the powerup state
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          display device configuration information                                      //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+      printDeviceConfigurationInformation();                                              // print the device configuration information in the debug window
+	  lightingcal = FALSE;                                                                // disable the lighting A2D output
+      GCONFIG_WrValuesToLightingTable(&DimCurve[0]);
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          start main loop                                                               //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//      
+      while (1)                                                                           // loop until power is removed
+      {
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          begin action request processing for debug commands                            //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+        UTIL_MenuExecute();                                                               // get and process any data the user entered in the debug window
+		processStatusRsp();                                                               //																		                  //
+        processFirmwareRsp();                                                             //
+		processResetRsp();
+		processDimmingRsp();
+		processIndicatorRsp();                                                                
+		processDisplayDimmingRsp();
+		processDisplayContrastRsp();
+		process_FPGA_data();
+		
+
+        if (acLightTableReadBack != 0)                                                  //
+        {
+            printd("Reading Lighting Lookup Table\n\r");                                  //
+            GCONFIG_DisplayLightingTable();                                               //
+            acLightTableReadBack = 0;                                                     //
+        }
+         
+		   
+        preTimeCount = processEthernetTraffic(preTimeCount, OFF);                         // check for new Ethernet traffic and process new data
+        GS2E_Task();  
+        }
+} // End of main() //
