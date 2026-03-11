@@ -1,0 +1,130 @@
+FlashPro
+Version: 11.9.2.1
+Release: v11.9 SP2
+
+Software Version: 11.9.2.1
+PDB file 'C:\_SWork\Local_Repos\10-9802\10-9802\FPGA\P764416\designer\impl1\mainprogram.pdb' has
+been loaded successfully.
+DESIGN : mainprogram;  CHECKSUM : 85D8;  PDB_VERSION : 1.9
+programmer 'S200852FZU' : FlashPro5
+Opened
+'C:\_SWork\Local_Repos\10-9802\10-9802\FPGA\P764416\designer\impl1\mainprogram_fp\mainprogram.p\
+ro'
+PDB file 'C:\_SWork\Local_Repos\10-9802\10-9802\FPGA\P764416\designer\impl1\mainprogram.pdb' has
+been loaded successfully.
+DESIGN : mainprogram;  CHECKSUM : 85D8;  PDB_VERSION : 1.9
+programmer 'S200852FZU' : Scan Chain...
+programmer 'S200852FZU' : Scan Chain PASSED.
+programmer 'S200852FZU' : Executing action PROGRAM
+programmer 'S200852FZU' : EXPORT FSN[48] = 00024e606409
+programmer 'S200852FZU' : Erase ...
+programmer 'S200852FZU' : Completed erase
+programmer 'S200852FZU' : EXPORT CHECKSUM[16] = 85d8
+programmer 'S200852FZU' : Programming FPGA Array
+programmer 'S200852FZU' : Verifying FPGA Array
+programmer 'S200852FZU' :         Verifying FPGA Array -- pass
+programmer 'S200852FZU' : Finished: Mon Feb 09 08:41:51 2026 (Elapsed time 00:00:26)
+programmer 'S200852FZU' : Executing action PROGRAM PASSED.
+
+                        o - o - o - o - o - o
+
+PDB file 'C:\_SWork\Local_Repos\10-9802\10-9802\FPGA\P764416\designer\impl1\mainprogram.pdb' has
+been loaded successfully.
+DESIGN : mainprogram;  CHECKSUM : F2ED;  PDB_VERSION : 1.9
+programmer 'S200852FZU' : Scan Chain...
+programmer 'S200852FZU' : Scan Chain PASSED.
+programmer 'S200852FZU' : Executing action PROGRAM
+programmer 'S200852FZU' : EXPORT FSN[48] = 00024e606409
+programmer 'S200852FZU' : Erase ...
+programmer 'S200852FZU' : Completed erase
+programmer 'S200852FZU' : EXPORT CHECKSUM[16] = f2ed
+programmer 'S200852FZU' : Programming FPGA Array
+programmer 'S200852FZU' : Verifying FPGA Array
+programmer 'S200852FZU' :         Verifying FPGA Array -- pass
+programmer 'S200852FZU' : Finished: Mon Feb 09 08:53:49 2026 (Elapsed time 00:00:26)
+programmer 'S200852FZU' : Executing action PROGRAM PASSED.
+
+                        o - o - o - o - o - o
+
+Warning: Project 'mainprogram' has been modified. Do you want to save it? [CANCEL]
+programmer 'S200852FZU' : Scan Chain...
+programmer 'S200852FZU' : Scan Chain PASSED.
+programmer 'S200852FZU' : Executing action PROGRAM
+programmer 'S200852FZU' : EXPORT FSN[48] = 00024e644431
+programmer 'S200852FZU' : Erase ...
+programmer 'S200852FZU' : Completed erase
+programmer 'S200852FZU' : EXPORT CHECKSUM[16] = f2ed
+programmer 'S200852FZU' : Programming FPGA Array
+programmer 'S200852FZU' : Verifying FPGA Array
+programmer 'S200852FZU' :         Verifying FPGA Array -- pass
+programmer 'S200852FZU' : Finished: Mon Feb 09 09:29:01 2026 (Elapsed time 00:00:28)
+programmer 'S200852FZU' : Executing action PROGRAM PASSED.
+
+                        o - o - o - o - o - o
+
+PDB file 'C:\_SWork\Local_Repos\10-9802\10-9802\FPGA\P764416\designer\impl1\mainprogram.pdb' has
+been loaded successfully.
+DESIGN : mainprogram;  CHECKSUM : 405D;  PDB_VERSION : 1.9
+programmer 'S200852FZU' : Scan Chain...
+programmer 'S200852FZU' : Scan Chain PASSED.
+programmer 'S200852FZU' : Executing action PROGRAM
+programmer 'S200852FZU' : EXPORT FSN[48] = 00024e644431
+programmer 'S200852FZU' : Erase ...
+programmer 'S200852FZU' : Completed erase
+programmer 'S200852FZU' : EXPORT CHECKSUM[16] = 405d
+programmer 'S200852FZU' : Programming FPGA Array
+programmer 'S200852FZU' : Verifying FPGA Array
+programmer 'S200852FZU' :         Verifying FPGA Array -- pass
+programmer 'S200852FZU' : Finished: Mon Feb 09 09:46:29 2026 (Elapsed time 00:00:27)
+programmer 'S200852FZU' : Executing action PROGRAM PASSED.
+
+                        o - o - o - o - o - o
+
+programmer 'S200852FZU' : Scan Chain...
+programmer 'S200852FZU' : Scan Chain PASSED.
+programmer 'S200852FZU' : Executing action PROGRAM
+programmer 'S200852FZU' : EXPORT FSN[48] = 00024e606009
+programmer 'S200852FZU' : Erase ...
+programmer 'S200852FZU' : Completed erase
+programmer 'S200852FZU' : EXPORT CHECKSUM[16] = 405d
+programmer 'S200852FZU' : Programming FPGA Array
+programmer 'S200852FZU' : Verifying FPGA Array
+programmer 'S200852FZU' :         Verifying FPGA Array -- pass
+programmer 'S200852FZU' : Finished: Mon Feb 09 09:58:10 2026 (Elapsed time 00:00:26)
+programmer 'S200852FZU' : Executing action PROGRAM PASSED.
+
+                        o - o - o - o - o - o
+
+programmer 'S200852FZU' : Scan Chain...
+programmer 'S200852FZU' : Scan Chain PASSED.
+programmer 'S200852FZU' : Executing action PROGRAM
+programmer 'S200852FZU' : EXPORT FSN[48] = 00024e64401d
+programmer 'S200852FZU' : Erase ...
+programmer 'S200852FZU' : Completed erase
+programmer 'S200852FZU' : EXPORT CHECKSUM[16] = 405d
+programmer 'S200852FZU' : Programming FPGA Array
+programmer 'S200852FZU' : Verifying FPGA Array
+programmer 'S200852FZU' :         Verifying FPGA Array -- pass
+programmer 'S200852FZU' : Finished: Mon Feb 09 10:19:43 2026 (Elapsed time 00:00:26)
+programmer 'S200852FZU' : Executing action PROGRAM PASSED.
+
+                        o - o - o - o - o - o
+
+programmer 'S200852FZU' : Scan Chain...
+programmer 'S200852FZU' : Scan Chain PASSED.
+programmer 'S200852FZU' : Executing action PROGRAM
+programmer 'S200852FZU' : EXPORT FSN[48] = 00024e606409
+programmer 'S200852FZU' : Erase ...
+programmer 'S200852FZU' : Completed erase
+programmer 'S200852FZU' : EXPORT CHECKSUM[16] = 405d
+programmer 'S200852FZU' : Programming FPGA Array
+programmer 'S200852FZU' : Verifying FPGA Array
+programmer 'S200852FZU' :         Verifying FPGA Array -- pass
+programmer 'S200852FZU' : Finished: Mon Feb 09 10:31:00 2026 (Elapsed time 00:00:34)
+programmer 'S200852FZU' : Executing action PROGRAM PASSED.
+
+                        o - o - o - o - o - o
+
+Warning: Project 'mainprogram' has been modified. Do you want to save it? [YES]
+Project saved.
+Project closed.

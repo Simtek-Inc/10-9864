@@ -1,0 +1,26 @@
+@W: CD638 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\mainprogram.vhd":240:7:240:13|Signal ohold61 is undriven. Either assign the signal a value or remove the signal declaration.
+@W: CD638 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\mainprogram.vhd":245:7:245:10|Signal do60 is undriven. Either assign the signal a value or remove the signal declaration.
+@W: CD638 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\mainprogram.vhd":252:7:252:10|Signal do67 is undriven. Either assign the signal a value or remove the signal declaration.
+@W: CD638 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\mainprogram.vhd":256:7:256:19|Signal r_switch_data is undriven. Either assign the signal a value or remove the signal declaration.
+@W: CG296 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\pwm_14bit.vhd":32:0:32:6|Incomplete sensitivity list; assuming completeness. Make sure all referenced variables in message CG290 are included in the sensitivity list.
+@W: CG290 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\pwm_14bit.vhd":34:5:34:9|Referenced variable i_rst is not in sensitivity list.
+@W: CG296 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\pwm_14bit.vhd":43:0:43:6|Incomplete sensitivity list; assuming completeness. Make sure all referenced variables in message CG290 are included in the sensitivity list.
+@W: CG290 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\pwm_14bit.vhd":45:5:45:9|Referenced variable i_rst is not in sensitivity list.
+@W: CD434 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\Max144.vhd":83:18:83:22|Signal reset in the sensitivity list is not used in the process. Make sure all variables in the sensitivity list are referenced in the process.
+@W: CL271 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\Max144.vhd":85:3:85:4|Pruning unused bits 4 to 1 of DataRegU1Ch1_5(16 downto 1). If this is not the intended behavior, drive the inputs with valid values, or inputs from the top level.
+@W: CL271 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\Max144.vhd":85:3:85:4|Pruning unused bits 4 to 1 of DataRegU1Ch0_5(16 downto 1). If this is not the intended behavior, drive the inputs with valid values, or inputs from the top level.
+@W: CL260 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\divider.vhd":38:3:38:4|Pruning register bit 1 of counter(1 downto 0). If this is not the intended behavior, drive the input with valid values, or an input from the top level.
+@W: CL252 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\mainprogram.vhd":256:7:256:19|Bit 0 of signal r_switch_data is floating -- simulation mismatch possible.
+@W: CL252 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\mainprogram.vhd":256:7:256:19|Bit 1 of signal r_switch_data is floating -- simulation mismatch possible.
+@W: CL252 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\mainprogram.vhd":256:7:256:19|Bit 2 of signal r_switch_data is floating -- simulation mismatch possible.
+@W: CL252 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\mainprogram.vhd":256:7:256:19|Bit 3 of signal r_switch_data is floating -- simulation mismatch possible.
+@W: CL252 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\mainprogram.vhd":256:7:256:19|Bit 4 of signal r_switch_data is floating -- simulation mismatch possible.
+@W: CL252 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\mainprogram.vhd":256:7:256:19|Bit 5 of signal r_switch_data is floating -- simulation mismatch possible.
+@W: CL252 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\mainprogram.vhd":256:7:256:19|Bit 6 of signal r_switch_data is floating -- simulation mismatch possible.
+@W: CL252 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\mainprogram.vhd":256:7:256:19|Bit 7 of signal r_switch_data is floating -- simulation mismatch possible.
+@W: CL168 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\mainprogram.vhd":341:4:341:29|Removing instance Discrete_Switches_Debounce because it does not drive other instances. To preserve this instance, use the syn_noprune synthesis directive.
+@W: CL168 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\mainprogram.vhd":324:4:324:14|Removing instance A2D01reader because it does not drive other instances. To preserve this instance, use the syn_noprune synthesis directive.
+@W: CL168 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\mainprogram.vhd":323:4:323:14|Removing instance A2D00reader because it does not drive other instances. To preserve this instance, use the syn_noprune synthesis directive.
+@W: CL260 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\revsion.vhd":79:2:79:3|Pruning register bit 5 of parallelholdreg(7 downto 0). If this is not the intended behavior, drive the input with valid values, or an input from the top level.
+@W: CL260 :"C:\_swork\10-\9800\9864\FPGA\10-9864\hdl\revsion.vhd":79:2:79:3|Pruning register bit 3 of parallelholdreg(7 downto 0). If this is not the intended behavior, drive the input with valid values, or an input from the top level.
+

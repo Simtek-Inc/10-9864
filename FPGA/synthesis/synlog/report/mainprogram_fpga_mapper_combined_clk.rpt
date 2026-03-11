@@ -1,0 +1,30 @@
+
+
+@S |Clock Optimization Summary
+
+
+#### START OF CLOCK OPTIMIZATION REPORT #####[
+
+Clock optimization not enabled
+2 non-gated/non-generated clock tree(s) driving 232 clock pin(s) of sequential element(s)
+4 gated/generated clock tree(s) driving 154 clock pin(s) of sequential element(s)
+0 instances converted, 154 sequential instances remain driven by gated/generated clocks
+
+================================= Non-Gated/Non-Generated Clocks ==================================
+Clock Tree ID     Driving Element     Drive Element Type     Fanout     Sample Instance            
+---------------------------------------------------------------------------------------------------
+@K:CKID0005       XCLK                port                   160        heartbeat_counter[10]      
+@K:CKID0006       SerialClock         port                   72         data_byte6_out.cellindex[2]
+===================================================================================================
+================================================================================= Gated/Generated Clocks ==================================================================================
+Clock Tree ID     Driving Element             Drive Element Type     Fanout     Sample Instance                    Explanation                                                             
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@K:CKID0001       clock_master.counter[0]     DFN1                   101        pwm_control_02.o_pwm_ctrl          No generated or derived clock directive on output of sequential instance
+@K:CKID0002       clock_master.counter[2]     DFN1                   38         pwm_control_02.counter[13]         No generated or derived clock directive on output of sequential instance
+@K:CKID0003       clock_master.counter[1]     DFN1                   12         Watch_Dog_Reset.timercount[10]     No generated or derived clock directive on output of sequential instance
+@K:CKID0004       clockdivider.counter[0]     DFN1                   3          clock_master.counter[2]            No generated or derived clock directive on output of sequential instance
+===========================================================================================================================================================================================
+
+
+##### END OF CLOCK OPTIMIZATION REPORT ######]
+

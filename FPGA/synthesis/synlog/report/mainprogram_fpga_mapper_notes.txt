@@ -1,0 +1,55 @@
+@N: MF248 |Running in 64-bit mode.
+@N: MF667 |Clock conversion disabled. (Command "set_option -fix_gated_and_generated_clocks 0" in the project file.)
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\max144.vhd":85:3:85:4|Removing sequential instance DataInReg[13:1] (in view: work.Max144(behavioral)) of type view:PrimLib.dffe(prim) because it does not drive other instances.
+@N: MO231 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\mainprogram.vhd":424:8:424:9|Found counter in view:work.mainprogram(behavioral) instance heartbeat_counter[25:0] 
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\clockmaster.vhd":43:3:43:4|Removing sequential instance counter[12] (in view: work.ClockMaster(behavioral)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\clockmaster.vhd":43:3:43:4|Removing sequential instance counter[11] (in view: work.ClockMaster(behavioral)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\clockmaster.vhd":43:3:43:4|Removing sequential instance counter[10] (in view: work.ClockMaster(behavioral)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\clockmaster.vhd":43:3:43:4|Removing sequential instance counter[9] (in view: work.ClockMaster(behavioral)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\clockmaster.vhd":43:3:43:4|Removing sequential instance counter[8] (in view: work.ClockMaster(behavioral)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\clockmaster.vhd":43:3:43:4|Removing sequential instance counter[7] (in view: work.ClockMaster(behavioral)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\clockmaster.vhd":43:3:43:4|Removing sequential instance counter[6] (in view: work.ClockMaster(behavioral)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\clockmaster.vhd":43:3:43:4|Removing sequential instance counter[5] (in view: work.ClockMaster(behavioral)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\clockmaster.vhd":43:3:43:4|Removing sequential instance counter[4] (in view: work.ClockMaster(behavioral)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\clockmaster.vhd":43:3:43:4|Removing sequential instance counter[3] (in view: work.ClockMaster(behavioral)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN115 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\clockmaster.vhd":44:5:44:6|Removing instance counter_4 (in view: work.ClockMaster(behavioral)) of type view:VhdlGenLib.ADD__const_cin_w13(fbk) because it does not drive other instances.
+@N: MO231 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\watchdog.vhd":41:3:41:4|Found counter in view:work.WatchDog(architecture_watchdog) instance timercount[10:0] 
+@N: MO231 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\max144.vhd":85:3:85:4|Found counter in view:work.Max144(behavioral) instance step[8:1] 
+@N: MO106 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\max144.vhd":90:9:90:12|Found ROM .delname. (in view: work.Max144(behavioral)) with 120 words by 1 bit.
+@N: MO106 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\max144.vhd":90:9:90:12|Found ROM .delname. (in view: work.Max144(behavioral)) with 120 words by 1 bit.
+@N: MO231 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\sipo.vhd":53:2:53:3|Found counter in view:work.sipoZ3(architecture_sipo) instance cellindex[2:0] 
+@N: MO231 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\revsion.vhd":58:2:58:3|Found counter in view:work.revision(architecture_revision) instance cellindex[2:0] 
+@N: MO231 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\sipo.vhd":53:2:53:3|Found counter in view:work.sipoZ2(architecture_sipo) instance cellindex[3:0] 
+@N: MO231 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\sipo.vhd":53:2:53:3|Found counter in view:work.sipoZ1(architecture_sipo) instance cellindex[3:0] 
+@N: MO231 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\sipo.vhd":53:2:53:3|Found counter in view:work.sipoZ0(architecture_sipo) instance cellindex[2:0] 
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\sipo.vhd":82:2:82:3|Removing sequential instance output[7] (in view: work.sipoZ0(architecture_sipo)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\sipo.vhd":82:2:82:3|Removing sequential instance output[6] (in view: work.sipoZ0(architecture_sipo)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\sipo.vhd":82:2:82:3|Removing sequential instance output[5] (in view: work.sipoZ0(architecture_sipo)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\sipo.vhd":82:2:82:3|Removing sequential instance output[4] (in view: work.sipoZ0(architecture_sipo)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\sipo.vhd":82:2:82:3|Removing sequential instance output[3] (in view: work.sipoZ0(architecture_sipo)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\sipo.vhd":82:2:82:3|Removing sequential instance output[2] (in view: work.sipoZ0(architecture_sipo)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\sipo.vhd":82:2:82:3|Removing sequential instance output[1] (in view: work.sipoZ0(architecture_sipo)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\sipo.vhd":53:2:53:3|Removing sequential instance paralleldata[7] (in view: work.sipoZ0(architecture_sipo)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\sipo.vhd":53:2:53:3|Removing sequential instance paralleldata[6] (in view: work.sipoZ0(architecture_sipo)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\sipo.vhd":53:2:53:3|Removing sequential instance paralleldata[5] (in view: work.sipoZ0(architecture_sipo)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\sipo.vhd":53:2:53:3|Removing sequential instance paralleldata[4] (in view: work.sipoZ0(architecture_sipo)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\sipo.vhd":53:2:53:3|Removing sequential instance paralleldata[3] (in view: work.sipoZ0(architecture_sipo)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\sipo.vhd":53:2:53:3|Removing sequential instance paralleldata[2] (in view: work.sipoZ0(architecture_sipo)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: BN362 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\sipo.vhd":53:2:53:3|Removing sequential instance paralleldata[1] (in view: work.sipoZ0(architecture_sipo)) of type view:PrimLib.dff(prim) because it does not drive other instances.
+@N: MO231 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\piso.vhd":51:2:51:3|Found counter in view:work.pisoZ5(architecture_piso) instance cellindex[2:0] 
+@N: MO231 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\piso.vhd":51:2:51:3|Found counter in view:work.pisoZ4(architecture_piso) instance cellindex[2:0] 
+@N: MO231 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\piso.vhd":51:2:51:3|Found counter in view:work.pisoZ3(architecture_piso) instance cellindex[2:0] 
+@N: MO231 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\piso.vhd":51:2:51:3|Found counter in view:work.pisoZ2(architecture_piso) instance cellindex[2:0] 
+@N: MO231 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\piso.vhd":51:2:51:3|Found counter in view:work.pisoZ1(architecture_piso) instance cellindex[2:0] 
+@N: MO231 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\piso.vhd":51:2:51:3|Found counter in view:work.pisoZ0(architecture_piso) instance cellindex[2:0] 
+@N: MO230 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\encoder.vhd":32:8:32:9|Found up-down counter in view:work.encoder(rtl) instance r_count[7:0]  
+@N: MO231 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\encoder.vhd":32:8:32:9|Found counter in view:work.encoder(rtl) instance r_debounce_count[18:0] 
+@N: MO231 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\pwm_14bit.vhd":34:2:34:3|Found counter in view:work.pwm_14bit(behavioral) instance counter[13:0] 
+@N: MF179 :"c:\_swork\10-\9800\9864\fpga\10-9864\hdl\pwm_14bit.vhd":48:4:48:5|Found 14 by 14 bit less-than operator ('<') PwmControlProcess\.o_pwm_ctrl_3 (in view: work.pwm_14bit(behavioral))
+@N: FP130 |Promoting Net XCLK_c on CLKBUF  XCLK_pad 
+@N: FP130 |Promoting Net LogicReset_c on CLKINT  I_36 
+@N: FP130 |Promoting Net Clock01 on CLKINT  clock_master.counter_inferred_clock[0] 
+@N: FP130 |Promoting Net SerialClock_c on CLKBUF  SerialClock_pad 
+@N: FP130 |Promoting Net SerialLoad_c on CLKINT  I_37 
+@N: MT320 |This timing report is an estimate of place and route data. For final timing results, use the FPGA vendor place and route report.
+@N: MT322 |Clock constraints include only register-to-register paths associated with each individual clock.

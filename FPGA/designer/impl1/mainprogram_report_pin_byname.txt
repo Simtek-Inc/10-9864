@@ -1,0 +1,56 @@
+*****************************************************************
+Pin Report - Date: Wed Mar 11 08:11:33 2026 UNCOMPLETED LAYOUT
+Product: Designer
+Release: v11.9 SP2
+Version: 11.9.2.1
+Design Name: mainprogram
+Family: IGLOO
+Die: AGLN250V5
+Package: 100 VQFP
+*****************************************************************
+
+-----------------------------------------------------------------
+Flash*Freeze information
+        Pin name  : 27
+        Pin usage : Available as a regular pin
+-----------------------------------------------------------------
+
+Port                  |Pin |Fixed |Function      |I/O Std  |Output Drive (mA) |Slew |Resistor Pull |Output Load (pF) |Use I/O Reg |Hot Swappable |Schmitt Trigger |Hold previous I/O state in Flash*Freeze mode |
+----------------------|----|------|--------------|---------|------------------|-----|--------------|-----------------|------------|--------------|----------------|---------------------------------------------|
+AdClock                59   Yes    GDC1/IO31RSB1  LVCMOS33  8                  High  None           5                 No           No             ---              No
+AdCs1                  61   Yes    GCB2/IO29RSB1  LVCMOS33  8                  High  None           5                 No           No             ---              No
+AdDout                 60   Yes    IO30RSB1       LVCMOS33  ---                ---   None           ---               No           No             Yes              No
+Ale                    91   Yes    IO07RSB0       LVCMOS33  ---                ---   Up             ---               No           No             Yes              No
+ExternalHardwareEn[0]  58   Yes    GDC0/IO32RSB1  LVCMOS33  2                  Low   Up             5                 No           No             ---              No
+ExternalHardwareEn[1]  57   Yes    GDA1/IO33RSB1  LVCMOS33  2                  Low   Up             5                 No           No             ---              No
+ExternalHardwareEn[2]  98   Yes    GAA0/IO00RSB0  LVCMOS33  2                  Low   Down           5                 No           No             ---              No
+ExternalHardwareEn[3]  97   Yes    GAA1/IO01RSB0  LVCMOS33  4                  Low   Down           5                 No           No             ---              No
+ExternalHardwareEn[4]  96   Yes    GAB0/IO02RSB0  LVCMOS33  4                  Low   Up             5                 No           No             ---              No
+HrtBeat                23   Yes    GEA0/IO51RSB3  LVCMOS33  4                  Low   Up             5                 No           No             ---              No
+i_5pos_switch[0]       8    Yes    IO61RSB3       LVCMOS33  ---                ---   None           ---               No           No             No               No
+i_5pos_switch[1]       7    Yes    IO62RSB3       LVCMOS33  ---                ---   None           ---               No           No             No               No
+i_5pos_switch[2]       6    Yes    GAC2/IO63RSB3  LVCMOS33  ---                ---   None           ---               No           No             No               No
+i_5pos_switch[3]       11   Yes    GFB0/IO59RSB3  LVCMOS33  ---                ---   None           ---               No           No             No               No
+i_5pos_switch[4]       10   Yes    GFB1/IO60RSB3  LVCMOS33  ---                ---   None           ---               No           No             No               No
+i_alt_source_switch    19   Yes    GFC2/IO55RSB3  LVCMOS33  ---                ---   None           ---               No           No             No               No
+i_enc1_a               78   Yes    GBB1/IO17RSB0  LVCMOS33  ---                ---   None           ---               No           No             Yes              No
+i_enc1_b               77   Yes    GBA0/IO18RSB0  LVCMOS33  ---                ---   None           ---               No           No             Yes              No
+i_enc2_a               76   Yes    GBA1/IO19RSB0  LVCMOS33  ---                ---   None           ---               No           No             Yes              No
+i_enc2_b               73   Yes    GBA2/IO20RSB1  LVCMOS33  ---                ---   None           ---               No           No             Yes              No
+i_enc3_a               72   Yes    IO21RSB1       LVCMOS33  ---                ---   None           ---               No           No             Yes              No
+i_enc3_b               71   Yes    GBB2/IO22RSB1  LVCMOS33  ---                ---   None           ---               No           No             Yes              No
+i_enc4_a               70   Yes    GBC2/IO23RSB1  LVCMOS33  ---                ---   None           ---               No           No             Yes              No
+i_enc4_b               69   Yes    IO24RSB1       LVCMOS33  ---                ---   None           ---               No           No             Yes              No
+i_ident_button         16   Yes    GFA2/IO56RSB3  LVCMOS33  ---                ---   None           ---               No           No             No               No
+i_test_button          13   Yes    GFA0/IO57RSB3  LVCMOS33  ---                ---   None           ---               No           No             No               No
+i_xpndr_switch         15   Yes    GFA1/IO58RSB3  LVCMOS33  ---                ---   None           ---               No           No             No               No
+LogicReset             86   Yes    IO09RSB0       LVCMOS33  ---                ---   Up             ---               No           No             Yes              No
+o_indicator_pwm        20   Yes    GEC1/IO54RSB3  LVCMOS33  8                  High  None           5                 No           No             ---              No
+o_panel_pwm            21   Yes    GEC0/IO53RSB3  LVCMOS33  8                  High  None           5                 No           No             ---              No
+ResetIn                82   Yes    IO13RSB0       LVCMOS33  ---                ---   None           ---               No           No             No               No
+SerialClock            95   Yes    GAB1/IO03RSB0  LVCMOS33  ---                ---   Up             ---               No           No             Yes              No
+SerialIn               92   Yes    IO06RSB0       LVCMOS33  ---                ---   Up             ---               No           No             Yes              No
+SerialLoad             93   Yes    GAC1/IO05RSB0  LVCMOS33  ---                ---   Up             ---               No           No             Yes              No
+SerialOut              94   Yes    GAC0/IO04RSB0  LVCMOS33  4                  High  Up             5                 No           No             ---              No
+uCReset                83   Yes    IO12RSB0       LVCMOS33  2                  Low   Up             5                 No           No             ---              No
+XCLK                   80   Yes    GBC1/IO15RSB0  LVCMOS33  ---                ---   None           ---               No           No             No               No

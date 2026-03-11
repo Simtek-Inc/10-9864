@@ -1,0 +1,238 @@
+***************************************************************************
+                               Status Report
+                          Tue Mar 10 15:18:46 2026 ***************************************************************************
+
+Product: Designer
+Release: v11.9 SP2
+Version: 11.9.2.1
+File Name: C:\_swork\10-\9800\9864\FPGA\10-9864\designer\impl1\mainprogram.adb
+Design Name: mainprogram  Design State: compile
+Last Saved: Tue Mar 10 15:15:58 2026
+
+***** Device Data **************************************************
+
+Family: IGLOO  Die: AGLN250V5  Package: 100 VQFP
+Speed: STD  Voltage: 1.5
+
+Restrict JTAG Pins: YES
+Restrict Probe Pins: YES
+
+Junction Temperature Range:   COM
+Voltage Range:   COM
+
+***** Import Variables *********************************************
+
+Source File(s) Imported on Tue Mar 10 15:18:43 2026:
+        C:\_swork\10-\9800\9864\FPGA\10-9864\synthesis\mainprogram.edn
+
+
+***** CAE Variables ************************************************
+
+Back Annotation File: N/A
+
+
+***** Bitstream Variables ******************************************
+
+Bitstream File: N/A
+     Lock Mode: off
+
+
+***** Compile Variables ********************************************
+
+Netlist PIN properties overwrite existing properties: 0
+
+Compile Output:
+=====================================================================
+Parameters used to run compile:
+===============================
+
+Family      : IGLOO
+Device      : AGLN250V5
+Package     : 100 VQFP
+Source      : C:\_swork\10-\9800\9864\FPGA\10-9864\synthesis\mainprogram.edn
+Format      : EDIF
+Topcell     : mainprogram
+Speed grade : STD
+Temp        : 0:25:70
+Voltage     : 1.58:1.50:1.42
+
+Keep Existing Physical Constraints : Yes
+Keep Existing Timing Constraints   : Yes
+
+pdc_abort_on_error                 : Yes
+pdc_eco_display_unmatched_objects  : No
+pdc_eco_max_warnings               : 10000
+
+demote_globals                     : No
+promote_globals                    : No
+localclock_max_shared_instances    : 12
+localclock_buffer_tree_max_fanout  : 12
+
+combine_register                   : No
+delete_buffer_tree                 : No
+
+report_high_fanout_nets_limit      : 10
+
+=====================================================================
+Compile starts ...
+
+
+Netlist Optimization Report
+===========================
+
+Optimized macros:
+  - Dangling net drivers:   0
+  - Buffers:                0
+  - Inverters:              0
+  - Tieoff:                 0
+  - Logic combining:        28
+
+    Total macros optimized  28
+
+There were 0 error(s) and 0 warning(s) in this design.
+=====================================================================
+
+Reading previous post-compile physical placement constraints.
+
+
+There were 0 error(s) and 0 warning(s).
+
+=====================================================================
+Compile report:
+===============
+
+    CORE                       Used:   1715  Total:   6144   (27.91%)
+    IO (W/ clocks)             Used:     37  Total:     68   (54.41%)
+    GLOBAL (Chip+Quadrant)     Used:      5  Total:     18   (27.78%)
+    PLL                        Used:      0  Total:      1   (0.00%)
+    RAM/FIFO                   Used:      0  Total:      8   (0.00%)
+    Low Static ICC             Used:      0  Total:      1   (0.00%)
+    FlashROM                   Used:      0  Total:      1   (0.00%)
+    User JTAG                  Used:      0  Total:      1   (0.00%)
+
+Global Information:
+
+    Type            | Used   | Total
+    ----------------|--------|--------------
+    Chip global     | 3      | 6  (50.00%)*
+    Quadrant global | 2      | 12 (16.67%)
+
+    (*) Chip globals may be assigned to Quadrant globals using the Multi-View Navigator (MVN)
+        or Physical Design Constraints (PDC).
+        They may also be assigned to Quadrant globals automatically during Layout.
+
+Core Information:
+
+    Type    | Instances    | Core tiles
+    --------|--------------|-----------
+    COMB    | 1329         | 1329
+    SEQ     | 386          | 386
+
+I/O Function:
+
+    Type                                  | w/o register  | w/ register  | w/ DDR register
+    --------------------------------------|---------------|--------------|----------------
+    Input I/O                             | 25            | 0            | 0
+    Output I/O                            | 12            | 0            | 0
+    Bidirectional I/O                     | 0             | 0            | 0
+    Differential Input I/O Pairs          | 0             | 0            | 0
+    Differential Output I/O Pairs         | 0             | 0            | 0
+
+I/O Technology:
+
+                                    |   Voltages    |             I/Os
+    --------------------------------|-------|-------|-------|--------|--------------
+    I/O Standard(s)                 | Vcci  | Vref  | Input | Output | Bidirectional
+    --------------------------------|-------|-------|-------|--------|--------------
+    LVCMOS33                        | 3.30v | N/A   | 25    | 12     | 0
+
+I/O Placement:
+
+    Locked  :  35 ( 94.59% )
+    Placed  :   0
+    UnPlaced:   2 (  5.41% )
+
+Warning: Only some I/Os are locked
+
+Net information report:
+=======================
+
+The following nets have been assigned to a chip global resource:
+    Fanout  Type          Name
+    --------------------------
+    234     INT_NET       Net   : LogicReset_c
+                          Driver: LogicReset_pad_RNI5AOB
+                          Source: NETLIST
+    103     CLK_NET       Net   : Clock01
+                          Driver: clock_master/counter_RNID9O8[0]
+                          Source: NETLIST
+    62      INT_NET       Net   : SerialLoad_c
+                          Driver: SerialLoad_pad_RNIK82F
+                          Source: NETLIST
+
+The following nets have been assigned to a quadrant global resource:
+    Fanout  Type          Name
+    --------------------------
+    160     CLK_NET       Net   : XCLK_c
+                          Driver: XCLK_pad
+                          Region: quadrant_UR
+    72      CLK_NET       Net   : SerialClock_c
+                          Driver: SerialClock_pad
+                          Region: quadrant_UL
+
+High fanout nets in the post compile netlist:
+    Fanout  Type          Name
+    --------------------------
+    39      CLK_NET       Net   : counter[2]
+                          Driver: clock_master/counter[2]
+    24      INT_NET       Net   : encoder_4/N_85
+                          Driver: encoder_4/r_enc_A_new_RNI8RFF1[1]
+    24      INT_NET       Net   : encoder_3/N_85
+                          Driver: encoder_3/r_enc_B_new_RNI4V961[1]
+    23      INT_NET       Net   : encoder_2/N_85
+                          Driver: encoder_2/r_enc_A_new_RNI034T[1]
+    23      INT_NET       Net   : encoder_1/N_85
+                          Driver: encoder_1/r_enc_A_new_RNIS6UJ1[1]
+    19      INT_NET       Net   : SerialIn_c
+                          Driver: SerialIn_pad
+    19      INT_NET       Net   : SerialIn_c_0
+                          Driver: SerialIn_pad_RNIB4B4
+    19      INT_NET       Net   : encoder_4/un1_i_reset_1
+                          Driver: encoder_4/r_debounce_count_RNISMIP3[0]
+    19      INT_NET       Net   : encoder_2/un1_i_reset_1
+                          Driver: encoder_2/r_debounce_count_RNIEJIL6[0]
+    19      INT_NET       Net   : encoder_3/un1_i_reset_1
+                          Driver: encoder_3/r_debounce_count_RNI5LIF7[0]
+
+Nets that are candidates for clock assignment and the resulting fanout:
+    Fanout  Type          Name
+    --------------------------
+    39      CLK_NET       Net   : counter[2]
+                          Driver: clock_master/counter[2]
+    37      INT_NET       Net   : SerialIn_c
+                          Driver: SerialIn_pad
+    24      INT_NET       Net   : encoder_4/N_85
+                          Driver: encoder_4/r_enc_A_new_RNI8RFF1[1]
+    24      INT_NET       Net   : encoder_3/N_85
+                          Driver: encoder_3/r_enc_B_new_RNI4V961[1]
+    23      INT_NET       Net   : encoder_2/N_85
+                          Driver: encoder_2/r_enc_A_new_RNI034T[1]
+    23      INT_NET       Net   : encoder_1/N_85
+                          Driver: encoder_1/r_enc_A_new_RNIS6UJ1[1]
+    19      INT_NET       Net   : encoder_4/un1_i_reset_1
+                          Driver: encoder_4/r_debounce_count_RNISMIP3[0]
+    19      INT_NET       Net   : encoder_2/un1_i_reset_1
+                          Driver: encoder_2/r_debounce_count_RNIEJIL6[0]
+    19      INT_NET       Net   : encoder_3/un1_i_reset_1
+                          Driver: encoder_3/r_debounce_count_RNI5LIF7[0]
+    19      INT_NET       Net   : encoder_1/un1_i_reset_1
+                          Driver: encoder_1/r_debounce_count_RNINHIB6[0]
+====================
+Flash*Freeze report:
+====================
+
+The design does not use the Flash*Freeze feature.
+
+====================
+
+

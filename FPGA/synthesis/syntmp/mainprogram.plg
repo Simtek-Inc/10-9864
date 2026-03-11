@@ -1,0 +1,55 @@
+@P:  Worst Slack : -7.045
+@P:  ClockMaster|counter_inferred_clock[0] - Estimated Frequency : 80.3 MHz
+@P:  ClockMaster|counter_inferred_clock[0] - Requested Frequency : 100.0 MHz
+@P:  ClockMaster|counter_inferred_clock[0] - Estimated Period : 12.449
+@P:  ClockMaster|counter_inferred_clock[0] - Requested Period : 10.000
+@P:  ClockMaster|counter_inferred_clock[0] - Slack : -2.449
+@P:  ClockMaster|counter_inferred_clock[1] - Estimated Frequency : 92.8 MHz
+@P:  ClockMaster|counter_inferred_clock[1] - Requested Frequency : 100.0 MHz
+@P:  ClockMaster|counter_inferred_clock[1] - Estimated Period : 10.781
+@P:  ClockMaster|counter_inferred_clock[1] - Requested Period : 10.000
+@P:  ClockMaster|counter_inferred_clock[1] - Slack : -0.781
+@P:  ClockMaster|counter_inferred_clock[2] - Estimated Frequency : 91.2 MHz
+@P:  ClockMaster|counter_inferred_clock[2] - Requested Frequency : 100.0 MHz
+@P:  ClockMaster|counter_inferred_clock[2] - Estimated Period : 10.961
+@P:  ClockMaster|counter_inferred_clock[2] - Requested Period : 10.000
+@P:  ClockMaster|counter_inferred_clock[2] - Slack : -0.961
+@P:  divider|counter_inferred_clock[0] - Estimated Frequency : 129.0 MHz
+@P:  divider|counter_inferred_clock[0] - Requested Frequency : 100.0 MHz
+@P:  divider|counter_inferred_clock[0] - Estimated Period : 7.751
+@P:  divider|counter_inferred_clock[0] - Requested Period : 10.000
+@P:  divider|counter_inferred_clock[0] - Slack : 2.249
+@P:  mainprogram|SerialClock - Estimated Frequency : 112.9 MHz
+@P:  mainprogram|SerialClock - Requested Frequency : 100.0 MHz
+@P:  mainprogram|SerialClock - Estimated Period : 8.858
+@P:  mainprogram|SerialClock - Requested Period : 10.000
+@P:  mainprogram|SerialClock - Slack : 1.142
+@P:  mainprogram|XCLK - Estimated Frequency : 58.7 MHz
+@P:  mainprogram|XCLK - Requested Frequency : 100.0 MHz
+@P:  mainprogram|XCLK - Estimated Period : 17.045
+@P:  mainprogram|XCLK - Requested Period : 10.000
+@P:  mainprogram|XCLK - Slack : -7.045
+@P:  Total Area : 1743.0
+@P:  Total Area : 91.0
+@P:  Total Area : 96.0
+@P:  Total Area : 147.0
+@P:  Total Area : 148.0
+@P:  Total Area : 155.0
+@P:  Total Area : 176.0
+@P:  Total Area : 54.0
+@P:  Total Area : 55.0
+@P:  Total Area : 55.0
+@P:  Total Area : 55.0
+@P:  Total Area : 53.0
+@P:  Total Area : 56.0
+@P:  Total Area : 20.0
+@P:  Total Area : 129.0
+@P:  Total Area : 124.0
+@P:  Total Area : 34.0
+@P:  Total Area : 67.0
+@P:  Total Area : 56.0
+@P:  Total Area : 62.0
+@P:  Total Area : 11.0
+@P:  Total Area : 2.0
+@P:  Total Area : 1743.0
+@P:  CPU Time : 0h:00m:06s
